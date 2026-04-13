@@ -2,7 +2,7 @@
 </script>
 
 <template>
-  <footer class="bg-[#0C2645] text-[#F8F9F9] p-7">
+  <footer class="bg-[#0C2645] text-[#F8F9F9] p-7 z-50">
     <nav>
       <section class="upper-footer">
         <div class="flex justify-around items-center text-xs opacity-85">
