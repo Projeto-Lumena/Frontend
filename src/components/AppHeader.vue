@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router';
 
 const menuAberto = ref(false);
 const abrirMenu = () => {
@@ -8,7 +9,8 @@ const abrirMenu = () => {
 
 </script>
 <template>
-    <header class="bg-[#0C2645] p-8">
+    
+    <header class="fixed z-50 top-0 left-0 w-full  bg-[#0C2645] p-8">
         <ul class="flex gap-5 items-center">
             <li>
                 <button @click="abrirMenu">
@@ -16,7 +18,9 @@ const abrirMenu = () => {
                 </button>
             </li>
             <li class="w-20">
-                <img src="/img/logo.svg" alt="Lumena">
+                <RouterLink to="/">
+                    <img src="/img/logo.svg" alt="Lumena">
+                </RouterLink>
             </li>
             <li class="text-white border-b flex w-20 pb-1 gap-5 font-sen">
                 <p>Buscar</p> <img src="/icons/procurar.svg" alt="Procura">
@@ -29,28 +33,13 @@ const abrirMenu = () => {
             </li>
         </ul>
         <div v-if="menuAberto"
-            class="fixed top-24 left-0 w-1/2 h-screen bg-[#0C2645] text-[#F8F9F9] shadow-lg p-6 flex flex-col gap-80 ">
+            class="fixed top-24 -z-10 left-0 w-1/2 h-full bg-[#0C2645] text-[#F8F9F9] shadow-lg p-6 flex flex-col gap-80 ">
             <div class="text-[#F8F9F9] flex flex-col gap-6 ">
                 <router-link to="/" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Início</router-link>
                 <router-link to="/produtos" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Produtos</router-link>
                 <router-link to="/perfil" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Perfil</router-link>
                 <router-link to="/sacola" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Sacola</router-link>
-
             </div>
-            <ul class="text-sm">
-                <li class="flex gap-1 font-sen mb-5">
-                    <img src="/icons/instagram.svg" alt="Perfil">
-                    <p>@lumena.aromas</p>
-                </li>
-                <li class="flex gap-1 font-sen mb-5">
-                    <img src="/icons/whatsapp.svg" alt="Perfil">
-                    <p>+55 47 9697-3888</p>
-                </li>
-                <li class="flex gap-1 font-sen mb-5">
-                    <img src="/icons/gmail.svg" alt="Perfil">
-                    <p>lumena.lah@gmail.com</p>
-                </li>
-            </ul>
         </div>
     </header>
 </template>

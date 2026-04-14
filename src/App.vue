@@ -5,12 +5,17 @@ import HomeView from './views/HomeView.vue';
 </script>
 
 <template>
-    <AppHeader />
-    <div class="min-h-screen flex flex-col">
-    <HomeView />
-        <router-view class="flex-1" />
-        <footer>
+    <header>
+        <AppHeader />
+    </header>
+    <main>
+        <HomeView />
+        <RouterView />
+    </main>
+    <footer>
+        <div class="min-h-screen flex flex-col">
+            <RouterView class="flex-1" />
             <AppFooter />
-        </footer>
-    </div>
+        </div>
+    </footer>
 </template>
