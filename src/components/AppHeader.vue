@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router';
 
 const menuAberto = ref(false);
 const abrirMenu = () => {
@@ -8,6 +9,7 @@ const abrirMenu = () => {
 
 </script>
 <template>
+    
     <header class="fixed z-50 top-0 left-0 w-full  bg-[#0C2645] p-8">
         <ul class="flex gap-5 items-center">
             <li>
@@ -16,7 +18,9 @@ const abrirMenu = () => {
                 </button>
             </li>
             <li class="w-20">
-                <img src="/img/logo.svg" alt="Lumena">
+                <RouterLink to="/">
+                    <img src="/img/logo.svg" alt="Lumena">
+                </RouterLink>
             </li>
             <li class="text-white border-b flex w-20 pb-1 gap-5 font-sen">
                 <p>Buscar</p> <img src="/icons/procurar.svg" alt="Procura">
