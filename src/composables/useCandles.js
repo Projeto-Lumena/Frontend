@@ -11,51 +11,51 @@ export function useCandles() {
       candles.value = [
         {
           id: 1,
-          nome: 'Vela Aromática Flor de Laranjeira',
+          nome: 'Flor de Laranjeira',
           preco: 50.00,
-          imagem: '/img/vela1.jpg'
+          imagem: '/img/flor_laranjeira.svg'
         },
         {
           id: 2,
-          nome: 'Vela Aromática Capim Limão',
+          nome: 'Capim Limão',
           preco: 50.00,
-          imagem: '/img/vela2.jpg'
+          imagem: '/img/capim_limão.svg'
         },
         {
           id: 3,
-          nome: 'Vela Aromática Lavanda Francesa',
+          nome: 'Lavanda Francesa',
           preco: 50.00,
-          imagem: '/img/vela3.jpg'
+          imagem: '/img/lavanda_francesa.svg'
         },
         {
           id: 4,
-          nome: 'Vela Aromática Jasmim',
+          nome: 'Jasmim',
           preco: 50.00,
-          imagem: '/img/vela4.jpg'
+          imagem: '/img/jasmim.svg'
         },
         {
           id: 5,
-          nome: 'Vela Aromática Flor de Cerejeira',
+          nome: 'Flor de Cerejeira',
           preco: 50.00,
-          imagem: '/img/vela5.jpg'
+          imagem: '/img/flor_cerejeira.svg'
         },
         {
           id: 6,
-          nome: 'Vela Aromática Maçã e Canela',
+          nome: 'Maçã e Canela',
           preco: 50.00,
-          imagem: '/img/vela6.jpg'
+          imagem: '/img/maca_canela.svg'
         },
         {
           id: 7,
-          nome: 'Vela Aromática Bergamota',
+          nome: 'Bergamota',
           preco: 50.00,
-          imagem: '/img/vela7.jpg'
+          imagem: '/img/bergamota.svg'
         },
         {
           id: 8,
-          nome: 'Vela Aromática Baunilha',
+          nome: 'Baunilha',
           preco: 50.00,
-          imagem: '/img/vela8.jpg'
+          imagem: '/img/baunilha.svg'
         }
       ]
     } catch (err) {
