@@ -12,7 +12,7 @@
                 target="_blank" 
                 aria-label="@lumena.aromas"
                 class="flex items-center gap-2">
-                <img src="/img/instagram-logo.svg" class="w-5 h-5" alt="Instagram">
+                <img src="/icons/instagram.svg" class="w-5 h-5" alt="Instagram">
                 @lumena.aromas
               </a>
             </li>
@@ -21,7 +21,7 @@
                 target="_blank" 
                 aria-label="+55 47 9697-3888"
                 class="flex items-center gap-2">
-                <img src="/img/whatsapp-logo.svg" class="w-5 h-5" alt="WhatsApp">
+                <img src="/icons/whatsapp.svg" class="w-5 h-5" alt="WhatsApp">
                 +55 47 9697-3888
               </a>
             </li>
@@ -30,7 +30,7 @@
                 target="_blank" 
                 aria-label="lumena.lah@gmail.com"
                 class="flex items-center gap-2">
-                <img src="/img/email-logo.svg" class="w-5 h-5" alt="Email">
+                <img src="/icons/gmail.svg" class="w-5 h-5" alt="Email">
                 lumena.lah@gmail.com
               </a>
             </li>
