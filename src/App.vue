@@ -1,21 +1,16 @@
 <script setup>
 import AppHeader from './components/AppHeader.vue'
 import AppFooter from './components/AppFooter.vue';
-import HomeView from './views/HomeView.vue';
 </script>
 
 <template>
     <header>
         <AppHeader />
     </header>
-    <main>
-        <HomeView />
+    <main class="pt-30">
         <RouterView />
     </main>
     <footer>
-        <div class="min-h-screen flex flex-col">
-            <RouterView class="flex-1" />
-            <AppFooter />
-        </div>
+        <AppFooter />
     </footer>
 </template>
