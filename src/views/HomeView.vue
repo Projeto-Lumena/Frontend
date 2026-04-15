@@ -1,10 +1,13 @@
 <script setup>
 import { ref, computed } from 'vue'
 import { useCandles } from '@/composables/useCandles'
+import Banner from '@/components/BannerComponent.vue'
+import { useBannerStore } from '@/stores/useBannerStore'
 import CardComponent from '@/components/CardComponent.vue'
 import FilterComponent from '@/components/FilterComponent.vue'
 
 const { candles, loading, error } = useCandles()
+const store = useBannerStore()
 
 const candlesAgrupadas = computed(() => {
   const mapa = {}
@@ -82,7 +85,7 @@ const candlesFiltradas = computed(() => {
 </script>
 
 <template>
-  <h1>Home</h1>
+  <Banner :imagens="store.getBanners('home')" />
 
   <FilterComponent @aplicar="aplicarFiltros" @limpar="limparFiltros" />
 
