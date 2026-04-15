@@ -1,11 +1,15 @@
 <script setup>
-import { useCandles } from '@/composables/useCandles'
+import Banner from '@/components/BannerComponent.vue'
 import CardComponent from '@/components/CardComponent.vue'
+import { useBannerStore } from '@/stores/useBannerStore'
+import { useCandles } from '@/composables/useCandles'
 
 const { candles, loading, error } = useCandles()
+const store = useBannerStore()
 </script>
 
 <template>
+  <Banner :imagens="store.getBanners('home')" />
   <h1>Home</h1>
 
   <p v-if="loading">Carregando...</p>
