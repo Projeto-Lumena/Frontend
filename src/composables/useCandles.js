@@ -12,49 +12,193 @@ export function useCandles() {
         {
           id: 1,
           nome: 'Flor de Laranjeira',
-          preco: 50.00,
+          tamanho: 'P',
+          preco: 30.00,
+          categoria: ['florais', 'citricos', 'lembrancinhas'],
           imagem: '/img/flor_laranjeira.svg'
         },
         {
           id: 2,
-          nome: 'Capim Limão',
-          preco: 50.00,
-          imagem: '/img/capim_limão.svg'
+          nome: 'Flor de Laranjeira',
+          tamanho: 'M',
+          preco: 40.00,
+          categoria: ['florais', 'citricos', 'lembrancinhas'],
+          imagem: '/img/flor_laranjeira.svg'
         },
         {
           id: 3,
-          nome: 'Lavanda Francesa',
+          nome: 'Flor de Laranjeira',
+          tamanho: 'G',
           preco: 50.00,
-          imagem: '/img/lavanda_francesa.svg'
+          categoria: ['florais', 'citricos', 'lembrancinhas'],
+          imagem: '/img/flor_laranjeira.svg'
         },
         {
           id: 4,
-          nome: 'Jasmim',
-          preco: 50.00,
-          imagem: '/img/jasmim.svg'
+          nome: 'Capim Limão',
+          tamanho: 'P',
+          preco: 30.00,
+          categoria: ['citricos', 'lembrancinhas'],
+          imagem: '/img/capim_limão.svg'
         },
         {
           id: 5,
-          nome: 'Flor de Cerejeira',
-          preco: 50.00,
-          imagem: '/img/flor_cerejeira.svg'
+          nome: 'Capim Limão',
+          tamanho: 'M',
+          preco: 40.00,
+          categoria: ['citricos', 'lembrancinhas'],
+          imagem: '/img/capim_limão.svg'
         },
         {
           id: 6,
-          nome: 'Maçã e Canela',
+          nome: 'Capim Limão',
+          tamanho: 'G',
           preco: 50.00,
-          imagem: '/img/maca_canela.svg'
+          categoria: ['citricos', 'lembrancinhas'],
+          imagem: '/img/capim_limão.svg'
         },
         {
           id: 7,
-          nome: 'Bergamota',
-          preco: 50.00,
-          imagem: '/img/bergamota.svg'
+          nome: 'Lavanda Francesa',
+          tamanho: 'P',
+          preco: 30.00,
+          categoria: ['florais', 'lembrancinhas'],
+          imagem: '/img/lavanda_francesa.svg'
         },
         {
           id: 8,
-          nome: 'Baunilha',
+          nome: 'Lavanda Francesa',
+          tamanho: 'M',
+          preco: 40.00,
+          categoria: ['florais', 'lembrancinhas'],
+          imagem: '/img/lavanda_francesa.svg'
+        },
+        {
+          id: 9,
+          nome: 'Lavanda Francesa',
+          tamanho: 'G',
           preco: 50.00,
+          categoria: ['florais', 'lembrancinhas'],
+          imagem: '/img/lavanda_francesa.svg'
+        },
+        {
+          id: 10,
+          nome: 'Jasmim',
+          tamanho: 'P',
+          preco: 30.00,
+          categoria: ['florais', 'lembrancinhas'],
+          imagem: '/img/jasmim.svg'
+        },
+        {
+          id: 11,
+          nome: 'Jasmim',
+          tamanho: 'M',
+          preco: 40.00,
+          categoria: ['florais', 'lembrancinhas'],
+          imagem: '/img/jasmim.svg'
+        },
+        {
+          id: 12,
+          nome: 'Jasmim',
+          tamanho: 'G',
+          preco: 50.00,
+          categoria: ['florais', 'lembrancinhas'],
+          imagem: '/img/jasmim.svg'
+        },
+        {
+          id: 13,
+          nome: 'Flor de Cerejeira',
+          tamanho: 'P',
+          preco: 30.00,
+          categoria: ['florais', 'doces', 'lembrancinhas'],
+          imagem: '/img/flor_cerejeira.svg'
+        },
+        {
+          id: 14,
+          nome: 'Flor de Cerejeira',
+          tamanho: 'M',
+          preco: 40.00,
+          categoria: ['florais', 'doces', 'lembrancinhas'],
+          imagem: '/img/flor_cerejeira.svg'
+        },
+        {
+          id: 15,
+          nome: 'Flor de Cerejeira',
+          tamanho: 'G',
+          preco: 50.00,
+          categoria: ['florais', 'doces', 'lembrancinhas'],
+          imagem: '/img/flor_cerejeira.svg'
+        },
+        {
+          id: 16,
+          nome: 'Maçã e Canela',
+          tamanho: 'P',
+          preco: 30.00,
+          categoria: ['doces', 'lembrancinhas'],
+          imagem: '/img/maca_canela.svg'
+        },
+        {
+          id: 17,
+          nome: 'Maçã e Canela',
+          tamanho: 'M',
+          preco: 40.00,
+          categoria: ['doces', 'lembrancinhas'],
+          imagem: '/img/maca_canela.svg'
+        },
+        {
+          id: 18,
+          nome: 'Maçã e Canela',
+          tamanho: 'G',
+          preco: 50.00,
+          categoria: ['doces', 'lembrancinhas'],
+          imagem: '/img/maca_canela.svg'
+        },
+        {
+          id: 19,
+          nome: 'Bergamota',
+          tamanho: 'P',
+          preco: 30.00,
+          categoria: ['citricos', 'lembrancinhas'],
+          imagem: '/img/bergamota.svg'
+        },
+        {
+          id: 20,
+          nome: 'Bergamota',
+          tamanho: 'M',
+          preco: 40.00,
+          categoria: ['citricos', 'lembrancinhas'],
+          imagem: '/img/bergamota.svg'
+        },
+        {
+          id: 21,
+          nome: 'Bergamota',
+          tamanho: 'G',
+          preco: 50.00,
+          categoria: ['citricos', 'lembrancinhas'],
+          imagem: '/img/bergamota.svg'
+        },
+        {
+          id: 22,
+          nome: 'Baunilha',
+          tamanho: 'P',
+          preco: 30.00,
+          categoria: ['doces', 'lembrancinhas'],
+          imagem: '/img/baunilha.svg'
+        },
+        {
+          id: 23,
+          nome: 'Baunilha',
+          tamanho: 'M',
+          preco: 40.00,
+          categoria: ['doces', 'lembrancinhas'],
+          imagem: '/img/baunilha.svg'
+        },
+        {
+          id: 24,
+          nome: 'Baunilha',
+          tamanho: 'G',
+          preco: 50.00,
+          categoria: ['doces', 'lembrancinhas'],
           imagem: '/img/baunilha.svg'
         }
       ]
