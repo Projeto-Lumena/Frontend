@@ -11,9 +11,6 @@ import AppFooter from './components/AppFooter.vue';
         <RouterView />
     </main>
     <footer>
-        <div class="min-h-screen flex flex-col">
-            <RouterView class="flex-1" />
-            <AppFooter />
-        </div>
+        <AppFooter />
     </footer>
 </template>

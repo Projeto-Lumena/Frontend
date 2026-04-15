@@ -1,3 +1,10 @@
+<script setup>
+import Banner from '@/components/BannerComponent.vue'
+import { useBannerStore } from '@/stores/useBannerStore'
+
+const store = useBannerStore()
+</script>
+
 <template>
-  <h2 class="text-2xl text-blue-950 mt-10">Home</h2>
+  <Banner :imagens="store.getBanners('home')" />
 </template>
