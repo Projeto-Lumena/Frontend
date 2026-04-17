@@ -5,6 +5,7 @@ import Banner from '@/components/BannerComponent.vue'
 import { useBannerStore } from '@/stores/useBannerStore'
 import CardComponent from '@/components/CardComponent.vue'
 import FilterComponent from '@/components/FilterComponent.vue'
+import InstallButton from '../components/InstallButton.vue';
 
 const { candles, loading, error } = useCandles()
 const store = useBannerStore()
@@ -86,6 +87,7 @@ const candlesFiltradas = computed(() => {
 
 <template>
   <Banner :imagens="store.getBanners('home')" />
+  
 
   <FilterComponent @aplicar="aplicarFiltros" @limpar="limparFiltros" />
 
@@ -95,4 +97,5 @@ const candlesFiltradas = computed(() => {
   <div v-else-if="candlesFiltradas.length > 0" class="grid grid-cols-2 m-4">
     <CardComponent v-for="candle in candlesFiltradas" :key="candle.id" :candle="candle" />
   </div>
+  <InstallButton />
 </template>
