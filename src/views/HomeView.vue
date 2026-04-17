@@ -10,8 +10,8 @@ import InstallButton from '../components/InstallButton.vue';
 const store = useBannerStore()
 const storeProducts = useProductsStore()
 
-onMounted(() => {
-  storeProducts.fetchProducts()
+onMounted(async () => {
+  await storeProducts.fetchProducts()
 })
 
 const categoriasMap = {
@@ -21,27 +21,34 @@ const categoriasMap = {
   4: 'lembrancinhas'
 }
 
+const precosMap = computed(() => {
+  const mapa = {}
+
+  storeProducts.productVariations.forEach(v => {
+    if (!mapa[v.produto]) mapa[v.produto] = []
+    mapa[v.produto].push(Number(v.preco))
+  })
+
+  return mapa
+})
+
 const candlesAgrupadas = computed(() => {
   const mapa = {}
 
   storeProducts.products.forEach(produto => {
+
+    const precos = precosMap.value[produto.id] || []
+
     if (!mapa[produto.nome]) {
       mapa[produto.nome] = {
         nome: produto.nome,
         imagem: produto.imagem,
+        categoriaIds: produto.categorias || [],
         categoria: produto.categorias
           ?.map(id => categoriasMap[id])
           .filter(Boolean) || [],
-        precos: []
+        precos: precos
       }
-    }
-
-    if (produto.variacoes?.length) {
-      produto.variacoes.forEach(v => {
-        mapa[produto.nome].precos.push(v.preco)
-      })
-    } else {
-      mapa[produto.nome].precos.push(0)
     }
   })
 
@@ -78,8 +85,8 @@ const candlesFiltradas = computed(() => {
 
   if (filtros.value.colecoes.length > 0) {
     lista = lista.filter(candle =>
-      candle.categoria.some(cat =>
-        filtros.value.colecoes.includes(cat)
+      candle.categoriaIds.some(id =>
+        filtros.value.colecoes.includes(String(id))
       )
     )
   }
