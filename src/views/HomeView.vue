@@ -1,34 +1,53 @@
 <script setup>
-import { ref, computed } from 'vue'
-import { useCandles } from '@/composables/useCandles'
+import { onMounted, ref, computed } from 'vue'
+import { useProductsStore } from '@/stores/products'
 import Banner from '@/components/BannerComponent.vue'
 import { useBannerStore } from '@/stores/useBannerStore'
 import CardComponent from '@/components/CardComponent.vue'
 import FilterComponent from '@/components/FilterComponent.vue'
 import InstallButton from '../components/InstallButton.vue';
 
-const { candles, loading, error } = useCandles()
 const store = useBannerStore()
+const storeProducts = useProductsStore()
+
+onMounted(() => {
+  storeProducts.fetchProducts()
+})
+
+const categoriasMap = {
+  1: 'florais',
+  2: 'citricos',
+  3: 'doces',
+  4: 'lembrancinhas'
+}
 
 const candlesAgrupadas = computed(() => {
   const mapa = {}
 
-  candles.value.forEach(candle => {
-    if (!mapa[candle.nome]) {
-      mapa[candle.nome] = {
-        nome: candle.nome,
-        imagem: candle.imagem,
-        categoria: candle.categoria,
+  storeProducts.products.forEach(produto => {
+    if (!mapa[produto.nome]) {
+      mapa[produto.nome] = {
+        nome: produto.nome,
+        imagem: produto.imagem,
+        categoria: produto.categorias
+          ?.map(id => categoriasMap[id])
+          .filter(Boolean) || [],
         precos: []
       }
     }
 
-    mapa[candle.nome].precos.push(candle.preco)
+    if (produto.variacoes?.length) {
+      produto.variacoes.forEach(v => {
+        mapa[produto.nome].precos.push(v.preco)
+      })
+    } else {
+      mapa[produto.nome].precos.push(0)
+    }
   })
 
   return Object.values(mapa).map(item => {
-    const menor = Math.min(...item.precos)
-    const maior = Math.max(...item.precos)
+    const menor = item.precos.length ? Math.min(...item.precos) : 0
+    const maior = item.precos.length ? Math.max(...item.precos) : 0
 
     return {
       ...item,
@@ -66,11 +85,11 @@ const candlesFiltradas = computed(() => {
   }
 
   if (filtros.value.ordenacao === 'maior') {
-    lista.sort((a, b) => b.preco - a.preco)
+    lista.sort((a, b) => b.precoMax - a.precoMax)
   }
 
   if (filtros.value.ordenacao === 'menor') {
-    lista.sort((a, b) => a.preco - b.preco)
+    lista.sort((a, b) => a.precoMin - b.precoMin)
   }
 
   if (filtros.value.ordenacao === 'alfabetica') {
@@ -91,11 +110,11 @@ const candlesFiltradas = computed(() => {
 
   <FilterComponent @aplicar="aplicarFiltros" @limpar="limparFiltros" />
 
-  <p v-if="loading">Carregando...</p>
-  <p v-else-if="error">{{ error }}</p>
+  <p v-if="storeProducts.loading">Carregando...</p>
+  <p v-else-if="storeProducts.error">{{ storeProducts.error }}</p>
 
   <div v-else-if="candlesFiltradas.length > 0" class="grid grid-cols-2 m-4">
-    <CardComponent v-for="candle in candlesFiltradas" :key="candle.id" :candle="candle" />
+    <CardComponent v-for="candle in candlesFiltradas" :key="candle.nome" :candle="candle" />
   </div>
   <InstallButton />
 </template>

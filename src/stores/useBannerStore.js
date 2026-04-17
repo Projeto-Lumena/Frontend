@@ -3,11 +3,20 @@ import { defineStore } from 'pinia'
 export const useBannerStore = defineStore('banner', {
   state: () => ({
     banners: {
-      home: [
-        '/img/banner1.svg',
-        '/img/banner2.svg',
-        '/img/banner3.svg'
-    ]}
+       home: [
+        {
+          mobile: '/img/banner1-mobile.svg',
+          desktop: '/img/banner1-desktop.svg'
+        },
+        {
+          mobile: '/img/banner2-mobile.svg',
+          desktop: '/img/banner2-desktop.svg'
+        },
+        {
+          mobile: '/img/banner3-mobile.svg',
+          desktop: '/img/banner3-desktop.svg'
+        }
+      ]}
   }),
 
   getters: {

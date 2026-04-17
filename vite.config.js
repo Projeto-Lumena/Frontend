@@ -42,13 +42,36 @@ export default defineConfig({
             sizes: '512x512',
             type: 'image/png',
             purpose: 'maskable',
+
           },
         ],
       },
+
+      workbox: {
+        runtimeCaching: [
+          {
+            urlPattern: /^http:\/\/127\.0\.0\.1:8000\/api\/.*/i,
+            handler: 'NetworkFirst',
+            options: {
+              cacheName: 'api-cache',
+              expiration: {
+                maxEntries: 50,
+                maxAgeSeconds: 60 * 60 * 24,
+              },
+              networkTimeoutSeconds: 10,
+              cacheableResponse: {
+                statuses: [0, 200],
+              },
+            },
+          },
+        ],
+      },
+
       devOptions: {
         enabled: true,
       },
     }),
+
     tailwindcss(),
   ],
   resolve: {
