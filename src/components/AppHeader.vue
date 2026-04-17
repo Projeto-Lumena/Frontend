@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue'
+import { RouterLink } from 'vue-router';
 
 const menuAberto = ref(false);
 const abrirMenu = () => {
@@ -44,7 +45,7 @@ const abrirMenu = () => {
             </li>
         </ul>
         <div v-if="menuAberto"
-            class="fixed top-24 -z-10 left-0 w-1/2 h-full bg-[#0C2645] text-[#F8F9F9] shadow-lg p-6 flex flex-col gap-80 ">
+            class="fixed top-24 -z-10 left-0 w-1/2 h-full bg-[#0C2645] text-[#F8F9F9] shadow-lg p-6 flex flex-col gap-80">
             <div class="text-[#F8F9F9] flex flex-col gap-6 ">
                 <router-link to="/"
                     class="p-2 font-sen hover:font-bold router-link-active:font-bold">Início</router-link>
