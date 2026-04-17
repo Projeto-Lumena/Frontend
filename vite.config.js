@@ -10,14 +10,19 @@ export default defineConfig({
   plugins: [
     vue(),
     VitePWA({
-      registerType: 'autoUpdate',
+      registerType: 'prompt',
+       workbox: {
+        globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+        cleanupOutdatedCaches: true,
+        sourcemap: false,
+      },
       manifest: {
-        id: 'com.tarefas-pwa',
-        name: 'Gerenciador de Tarefas',
-        short_name: 'Tarefas',
-        description: 'Aplicativo PWA para gerenciar tarefas diárias',
-        theme_color: '#4a90d9',
-        background_color: '#ffffff',
+        id: 'com.lumena',
+        name: 'Lumena Velas Aromáticas',
+        short_name: 'Lumena',
+        description: 'Aplicativo PWA para divulgação de velas aromáticas',
+        theme_color: '#0C2645',
+        background_color: '#F8F9F9',
         display: 'standalone',
         scope: '/',
         start_url: '/',

@@ -1,5 +1,18 @@
 import './assets/css/global.css'
 
+import { registerSW } from 'virtual:pwa-register';
+
+registerSW({
+  immediate: true,
+  onRegisteredSW(swUrl, registration) {
+    if (registration) {
+      setInterval(() => {
+        registration.update();
+      }, 60 * 1000); 
+    }
+  },
+});
+
 import { createApp } from 'vue'
 import { createPinia } from 'pinia'
 import App from './App.vue'
