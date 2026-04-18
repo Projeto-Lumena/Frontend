@@ -120,7 +120,7 @@ const candlesFiltradas = computed(() => {
   <p v-if="storeProducts.loading">Carregando...</p>
   <p v-else-if="storeProducts.error">{{ storeProducts.error }}</p>
 
-  <div v-else-if="candlesFiltradas.length > 0" class="grid grid-cols-2 m-4">
+  <div v-else-if="candlesFiltradas.length > 0" class="grid grid-cols-2 m-4 sm:grid-cols-3 sm:m-6 md:grid-cols-4 md:m-10 lg:m-20 lg:gap-4">
     <CardComponent v-for="candle in candlesFiltradas" :key="candle.nome" :candle="candle" />
   </div>
   <InstallButton />
