@@ -8,8 +8,7 @@ const abrirMenu = () => {
 }
 
 </script>
-<template>
-    
+<template>   
     <header class="fixed z-50 top-0 left-0 w-full  bg-[#0C2645] p-8">
         <ul class="flex gap-5 items-center justify-between">
             <li>
@@ -26,7 +25,9 @@ const abrirMenu = () => {
                 <p>Buscar</p> <img src="/icons/procurar.svg" alt="Procura">
             </li>
             <li>
+                <RouterLink to="/login">
                 <img src="/icons/usuario.svg" alt="Perfil">
+                </RouterLink>
             </li>
             <li>
                 <img src="/icons/sacola.svg" alt="Sacola">
@@ -37,7 +38,7 @@ const abrirMenu = () => {
             <div class="text-[#F8F9F9] flex flex-col gap-6 ">
                 <router-link to="/" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Início</router-link>
                 <router-link to="/produtos" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Produtos</router-link>
-                <router-link to="/perfil" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Perfil</router-link>
+                <router-link to="/login" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Perfil</router-link>
                 <router-link to="/sacola" class="p-2 font-sen hover:font-bold router-link-active:font-bold">Sacola</router-link>
             </div>
         </div>
