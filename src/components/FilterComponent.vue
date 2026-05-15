@@ -25,41 +25,42 @@ const limparFiltros = () => {
 </script>
 
 <template>
-    <div class="m-6">
+    <div class="m-6 sm:m-9 md:m-13 lg:m-23">
 
-        <button @click="mostrarFiltros = !mostrarFiltros" class="border border-[#A9A9A9] w-full p-2 text-[#2C2828]">
+        <button @click="mostrarFiltros = !mostrarFiltros"
+            class="border border-[#A9A9A9] w-full lg:w-auto lg:mx-auto lg:block lg:p-4 p-2 text-[#2C2828]">
             {{ mostrarFiltros ? '- Filtros' : '+ Filtros' }}
         </button>
 
         <div v-if="mostrarFiltros" class="mt-4 flex flex-col">
-
-            <div class="border border-[#A9A9A9] mb-4">
-                <button @click="mostrarOrdenar = !mostrarOrdenar"
-                    class="w-full px-4 py-2 text-[#2C2828] flex justify-between items-center">
-                    <span>Ordenar</span>
-                    <img src="/icons/aba.svg" alt="" :class="{ 'rotate-180': mostrarOrdenar }"
-                        class="transition-transform duration-300">
-                </button>
-                <div v-if="mostrarOrdenar" class="px-4 py-2 grid grid-cols-2">
-                    <label><input type="radio" value="maior" v-model="ordenacao"> Maior preço</label>
-                    <label><input type="radio" value="alfabetica" v-model="ordenacao"> Ordem alfabética</label>
-                    <label><input type="radio" value="menor" v-model="ordenacao"> Menor preço</label>
-                    <label><input type="radio" value="decrescente" v-model="ordenacao"> Ordem decrescente</label>
+            <div class="md:flex md:flex-row md:justify-between">
+                <div class="border border-[#A9A9A9] mb-4 md:w-1/2 md:mr-1 lg:mr-4">
+                    <button @click="mostrarOrdenar = !mostrarOrdenar"
+                        class="w-full px-4 py-2 text-[#2C2828] flex justify-between items-center">
+                        <span>Ordenar</span>
+                        <img src="/icons/aba.svg" alt="" :class="{ 'rotate-180': mostrarOrdenar }"
+                            class="transition-transform duration-300">
+                    </button>
+                    <div v-if="mostrarOrdenar" class="px-4 py-2 grid grid-cols-2">
+                        <label><input type="radio" value="maior" v-model="ordenacao"> Maior preço</label>
+                        <label><input type="radio" value="alfabetica" v-model="ordenacao"> Ordem alfabética</label>
+                        <label><input type="radio" value="menor" v-model="ordenacao"> Menor preço</label>
+                        <label><input type="radio" value="decrescente" v-model="ordenacao"> Ordem decrescente</label>
+                    </div>
                 </div>
-            </div>
-
-            <div class="border border-[#A9A9A9] mb-4">
-                <button @click="mostrarColecao = !mostrarColecao"
-                    class="w-full px-4 py-2 text-[#2C2828] flex justify-between items-center">
-                    <span>Coleção</span>
-                    <img src="/icons/aba.svg" alt="" :class="{ 'rotate-180': mostrarColecao }"
-                        class="transition-transform duration-300">
-                </button>
-                <div v-if="mostrarColecao" class="px-4 py-2 grid grid-cols-2">
-                    <label><input type="checkbox" value="doces" v-model="colecoesSelecionadas"> Aromas Doces</label>
-                    <label><input type="checkbox" value="citricos" v-model="colecoesSelecionadas"> Aromas Cítricos</label>
-                    <label><input type="checkbox" value="florais" v-model="colecoesSelecionadas"> Aromas Florais</label>
-                    <label><input type="checkbox" value="lembrancinhas" v-model="colecoesSelecionadas"> Lembrancinhas</label>
+                <div class="border border-[#A9A9A9] mb-4 md:w-1/2 md:ml-1 lg:ml-4">
+                    <button @click="mostrarColecao = !mostrarColecao"
+                        class="w-full px-4 py-2 text-[#2C2828] flex justify-between items-center">
+                        <span>Coleção</span>
+                        <img src="/icons/aba.svg" alt="" :class="{ 'rotate-180': mostrarColecao }"
+                            class="transition-transform duration-300">
+                    </button>
+                    <div v-if="mostrarColecao" class="px-4 py-2 grid grid-cols-2">
+                        <label><input type="checkbox" value="4" v-model="colecoesSelecionadas"> Aromas Doces</label>
+                        <label><input type="checkbox" value="2" v-model="colecoesSelecionadas"> Aromas Cítricos</label>
+                        <label><input type="checkbox" value="1" v-model="colecoesSelecionadas"> Aromas Florais</label>
+                        <label><input type="checkbox" value="3" v-model="colecoesSelecionadas"> Lembrancinhas</label>
+                    </div>
                 </div>
             </div>
 

@@ -15,6 +15,12 @@ const props = defineProps({
         default: 3000
     }
 })
+const mobile = ref(window.innerWidth < 768)
+
+const atualizarTela = () => {
+  mobile.value = window.innerWidth < 768
+}
+
 const primeiro = ref(0)
 let tempo = null
 
@@ -28,20 +34,23 @@ const anterior = () => {
 }
 
 onMounted(() => {
-    if (props.automatico && props.imagens.length > 1) {
-        tempo = setInterval(proximo, props.intervalo)
-    }
+  window.addEventListener('resize', atualizarTela)
+
+  if (props.automatico && props.imagens.length > 1) {
+    tempo = setInterval(proximo, props.intervalo)
+  }
 })
 
 onUnmounted(() => {
-    clearInterval(tempo)
+  clearInterval(tempo)
+  window.removeEventListener('resize', atualizarTela)
 })
 
 </script>
 <template>
     <div>
         <div class="relative w-full h-full mt-25">
-            <img :src="imagens[primeiro]" class="w-full h-full object-cover transition-all duration-400" />
+            <img :src="mobile ? imagens[primeiro].mobile : imagens[primeiro].desktop" class="w-full h-full object-cover transition-all duration-400"/>
 
             <button @click="anterior" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 rounded">
             </button>
