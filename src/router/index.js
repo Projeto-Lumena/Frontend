@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from 'vue-router'
-
 import HomeView from '../views/HomeView.vue'
 import ProductView from '@/views/ProductView.vue'
 import UserView from '@/views/UserView.vue'
 import BagView from '@/views/BagView.vue'
+import UserFormView from '@/views/FormViews/UserFormView.vue'
+import LoginView from '@/views/FormViews/LoginView.vue' 
 
 const routes = [
   {
@@ -26,7 +27,18 @@ const routes = [
     name: 'sacola',
     component: BagView
   },
+  {
+    path: '/userForm',
+    name: 'user',
+    component: UserFormView
+  },
+  { 
+    path: '/login',
+    name: 'login',
+    component: LoginView
+  },
 ]
+
 
 const router = createRouter({
   history: createWebHistory(),
