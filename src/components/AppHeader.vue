@@ -18,7 +18,6 @@ const abrirMenu = () => {
                             <img src="/icons/menu-hamburger.svg" alt="Menu">
                         </button>
                     </li>
-
                     <li class="w-20 mb-2 xl:mr-30 lg:ml-8">
                         <img src="/img/logo.svg" alt="Lumena">
                     </li>
@@ -36,7 +35,9 @@ const abrirMenu = () => {
                         <p>Buscar</p> <img src="/icons/procurar.svg" alt="Procura">
                     </li>
                     <li>
+                    <RouterLink to="/login">
                         <img class="w-6 md:w-8" src="/icons/usuario.svg" alt="Perfil ">
+                        </RouterLink>
                     </li>
                     <li>
                         <img class="w-6 md:w-8" src="/icons/sacola.svg" alt="Sacola">
@@ -51,7 +52,7 @@ const abrirMenu = () => {
                     class="p-2 font-sen hover:font-bold router-link-active:font-bold">Início</router-link>
                 <router-link to="/produtos"
                     class="p-2 font-sen hover:font-bold router-link-active:font-bold">Produtos</router-link>
-                <router-link to="/perfil"
+                <router-link to="/login"
                     class="p-2 font-sen hover:font-bold router-link-active:font-bold">Perfil</router-link>
                 <router-link to="/sacola"
                     class="p-2 font-sen hover:font-bold router-link-active:font-bold">Sacola</router-link>
