@@ -1,7 +1,7 @@
 <script setup>
 import Input from '@/components/FormComponents/InputComponent.vue'
 import Button from '@/components/FormComponents/ButtonComponent.vue'
-import { useInputStore } from '@/stores/UserInputStore'
+import { useInputStore } from '@/stores/userInputStore'
 
 const store = useInputStore()
 const submit = async () => {
