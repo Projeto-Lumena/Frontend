@@ -6,7 +6,7 @@ defineProps({
 
 <template>
   <div class="m-2 border text-center border-[#E7EAE9] p-1 justify-around">
-    <img :src="candle.imagem" :alt="candle.nome" class="w-full object-cover mb-2" />
+    <img :src="candle.imagem.url" :alt="candle.nome" class="w-full object-cover mb-2" />
 
     <h2 class="mb-4">
       Vela Aromática {{ candle.nome }}
