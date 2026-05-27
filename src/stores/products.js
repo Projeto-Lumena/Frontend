@@ -43,18 +43,18 @@ export const useProductsStore = defineStore('products', () => {
         }
     }
 
-    async function updateProduct(id, data) {
+    async function updateProduct(id, { title, imgAttachmentKey } = {}) {
+        if (title !== undefined && !title.trim()) return;
         error.value = null;
-
+        const payload = {};
+        if (title !== undefined) payload.title = title.trim();
+        if (imgAttachmentKey != null) payload.img_attachment_key = imgAttachmentKey;
         try {
-            const response = await productsApi.update(id, data);
-            const index = products.value.findIndex(p => p.id === id);
-
-            if (index !== -1) {
-                products.value[index] = response.data;
-            }
+            const response = await productsApi.update(id, payload);
+            const index = products.value.findIndex((p) => p.id === id);
+            if (index !== -1) products.value[index] = response.data;
         } catch (err) {
-            error.value = 'Erro ao atualizar produto.';
+            error.value = 'Erro ao editar produto.';
             console.error(err);
         }
     }

@@ -32,7 +32,7 @@ const precosMap = computed(() => {
   return mapa
 })
 
-const candlesAgrupadas = computed(() => {
+const productsAgrupadas = computed(() => {
   const mapa = {}
 
   storeProducts.products.forEach(produto => {
@@ -80,12 +80,12 @@ const limparFiltros = () => {
   }
 }
 
-const candlesFiltradas = computed(() => {
-  let lista = [...candlesAgrupadas.value]
+const productsFiltradas = computed(() => {
+  let lista = [...productsAgrupadas.value]
 
   if (filtros.value.colecoes.length > 0) {
-    lista = lista.filter(candle =>
-      candle.categoriaIds.some(id =>
+    lista = lista.filter(product =>
+      product.categoriaIds.some(id =>
         filtros.value.colecoes.includes(String(id))
       )
     )
@@ -120,8 +120,8 @@ const candlesFiltradas = computed(() => {
   <p v-if="storeProducts.loading">Carregando...</p>
   <p v-else-if="storeProducts.error">{{ storeProducts.error }}</p>
 
-  <div v-else-if="candlesFiltradas.length > 0" class="grid grid-cols-2 m-4 sm:grid-cols-3 sm:m-6 md:grid-cols-4 md:m-10 lg:m-20 lg:gap-4">
-    <CardComponent v-for="candle in candlesFiltradas" :key="candle.nome" :candle="candle" />
+  <div v-else-if="productsFiltradas.length > 0" class="grid grid-cols-2 m-4 sm:grid-cols-3 sm:m-6 md:grid-cols-4 md:m-10 lg:m-20 lg:gap-4">
+    <CardComponent v-for="product in productsFiltradas" :key="product.nome" :product="product" />
   </div>
   <InstallButton />
 </template>
