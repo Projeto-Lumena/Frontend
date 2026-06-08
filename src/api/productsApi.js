@@ -20,6 +20,14 @@ const productsApi = {
   remove(id) {
     return apiClient.delete(`/produto/${id}/`);
   },
+  uploadImage(file, description = '') {
+    const formData = new FormData();
+    formData.append('file', file);
+    if (description) formData.append('description', description);
+    return apiClient.post('/uploads/images/', formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+    });
+  },
 };
 
 export default productsApi;

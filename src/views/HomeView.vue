@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
+import { useRoute } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import Banner from '@/components/BannerComponent.vue'
 import { useBannerStore } from '@/stores/useBannerStore'
@@ -7,8 +8,21 @@ import CardComponent from '@/components/CardComponent.vue'
 import FilterComponent from '@/components/FilterComponent.vue'
 import InstallButton from '../components/InstallButton.vue';
 
+const route = useRoute();
 const store = useBannerStore()
 const storeProducts = useProductsStore()
+
+const showLoginMessage = ref(false)
+
+onMounted(() => {
+  if (route.query.login === 'success') {
+    showLoginMessage.value = true
+
+    setTimeout(() => {
+      showLoginMessage.value = false
+    }, 4000)
+  }
+})
 
 onMounted(async () => {
   await storeProducts.fetchProducts()
@@ -32,7 +46,7 @@ const precosMap = computed(() => {
   return mapa
 })
 
-const candlesAgrupadas = computed(() => {
+const productsAgrupadas = computed(() => {
   const mapa = {}
 
   storeProducts.products.forEach(produto => {
@@ -80,12 +94,12 @@ const limparFiltros = () => {
   }
 }
 
-const candlesFiltradas = computed(() => {
-  let lista = [...candlesAgrupadas.value]
+const productsFiltradas = computed(() => {
+  let lista = [...productsAgrupadas.value]
 
   if (filtros.value.colecoes.length > 0) {
-    lista = lista.filter(candle =>
-      candle.categoriaIds.some(id =>
+    lista = lista.filter(product =>
+      product.categoriaIds.some(id =>
         filtros.value.colecoes.includes(String(id))
       )
     )
@@ -113,15 +127,33 @@ const candlesFiltradas = computed(() => {
 
 <template>
   <Banner :imagens="store.getBanners('home')" />
-  
+
+  <transition name="fade">
+    <div v-if="showLoginMessage" class="bg-[#0C2645] text-white px-6 py-3 text-center">
+      Login realizado com sucesso!
+    </div>
+  </transition>
 
   <FilterComponent @aplicar="aplicarFiltros" @limpar="limparFiltros" />
 
   <p v-if="storeProducts.loading">Carregando...</p>
   <p v-else-if="storeProducts.error">{{ storeProducts.error }}</p>
 
-  <div v-else-if="candlesFiltradas.length > 0" class="grid grid-cols-2 m-4 sm:grid-cols-3 sm:m-6 md:grid-cols-4 md:m-10 lg:m-20 lg:gap-4">
-    <CardComponent v-for="candle in candlesFiltradas" :key="candle.nome" :candle="candle" />
+  <div v-else-if="productsFiltradas.length > 0"
+    class="grid grid-cols-2 m-4 sm:grid-cols-3 sm:m-6 md:grid-cols-4 md:m-10 lg:m-20 lg:gap-4 lg:grid-cols-5">
+    <CardComponent v-for="product in productsFiltradas" :key="product.nome" :product="product" />
   </div>
   <InstallButton />
 </template>
+
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+  opacity: 0;
+}
+</style>
