@@ -1,38 +1,39 @@
 import { defineStore } from 'pinia'
+import authApi from '../api/authApi'
 
 export const useUserStore = defineStore('userStore', {
   state: () => ({
     cadastroRealizado: true,
 
     user: {
-      nome: 'Nome Sobrenome',
-      birthdata: 'DD/MM/AAAA',
-      email: 'gmail@gmail.com',
-      phone: '(00) 00000-0000',
-      photo: ''
+      name: '',
+      email: '',
+      telefone: '',
+      nascimento: '',
+      foto: ''
     },
 
-    pedidos: [
-      {
-        id: 1,
-        nome: 'Vela Aromática - Flor de Laranjeira',
-        status: 'Status',
-        data: 'DD/MM/AAAA',
-        tamanho: 'P',
-        quantidade: 1,
-        total: 'R$30,00',
-        imagem: ''
-      },
-      {
-        id: 2,
-        nome: 'Vela Aromática - Capim Limão',
-        status: 'Status',
-        data: 'DD/MM/AAAA',
-        tamanho: 'M',
-        quantidade: 1,
-        total: 'R$40,00',
-        imagem: ''
+    pedidos: []
+  }),
+
+  actions: {
+    async fetchUser() {
+      try {
+        const { data } = await authApi.getMe()
+
+        console.log(data)
+
+        this.user = {
+          name: data.name,
+          email: data.email,
+          telefone: data.telefone,
+          nascimento: data.nascimento,
+          foto: data.foto?.url || ''
+        }
+
+      } catch (error) {
+        console.log(error)
       }
-    ]
-  })
+    }
+  }
 })
