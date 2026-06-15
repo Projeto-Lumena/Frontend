@@ -1,19 +1,23 @@
 <script setup>
 defineProps({
-  candle: Object
+  product: Object
 })
 </script>
 
 <template>
   <div class="m-2 border text-center border-[#E7EAE9] p-1 justify-around">
-    <img :src="candle.imagem.url" :alt="candle.nome" class="w-full object-cover mb-2" />
+    <img
+      :src="product.imagem.url"
+      :alt="product.nome" 
+      class="w-full object-cover mb-2"
+    />
 
     <h2 class="mb-4">
-      Vela Aromática {{ candle.nome }}
+      Vela Aromática {{ product.nome }}
     </h2>
 
     <p class="text-[#2C2828] text-sm font-semibold">
-      R$ {{ candle.precoMin.toFixed(2).replace('.', ',') }} - R$ {{ candle.precoMax.toFixed(2).replace('.', ',') }}
+      R$ {{ product.precoMin.toFixed(2).replace('.', ',') }} - R$ {{ product.precoMax.toFixed(2).replace('.', ',') }}
     </p>
   </div>
 </template>
