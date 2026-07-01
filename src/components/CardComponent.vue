@@ -6,7 +6,7 @@ defineProps({
 
 <template>
   <div class="m-2 border text-center border-[#E7EAE9] p-1 justify-around">
-  <RouterLink to="/produto">
+  <RouterLink :to="{ name: 'produto', params: { id: product.id } }">
     <img
       :src="product.imagem.url"
       :alt="product.nome" 

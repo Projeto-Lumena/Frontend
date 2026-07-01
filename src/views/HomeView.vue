@@ -55,6 +55,7 @@ const productsAgrupadas = computed(() => {
 
     if (!mapa[produto.nome]) {
       mapa[produto.nome] = {
+        id: produto.id, 
         nome: produto.nome,
         imagem: produto.imagem,
         categoriaIds: produto.categorias || [],
