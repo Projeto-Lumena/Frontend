@@ -30,8 +30,8 @@ onMounted(async () => {
 
 const categoriasMap = {
   1: 'florais',
-  2: 'citricos',
-  3: 'doces',
+  3: 'citricos',
+  2: 'doces',
   4: 'lembrancinhas'
 }
 
