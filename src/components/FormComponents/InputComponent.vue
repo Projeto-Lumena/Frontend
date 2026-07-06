@@ -14,7 +14,7 @@ const updateValue = (value) => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-1 my-5 w-[80%]">
+  <div class="flex flex-col gap-1 my-5 w-[100%]">
 
     <label class="text-sm text-[#2C2828]">
       {{ campo.label }}
