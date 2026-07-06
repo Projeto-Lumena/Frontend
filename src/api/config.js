@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000/api/',
+  baseURL: import.meta.env.VITE_API_URL ?? 'http://127.0.0.1:8000/api/',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -15,6 +15,8 @@ apiClient.interceptors.request.use((config) => {
   }
   return config;
 });
+
+const BASE_URL = import.meta.env.VITE_API_URL;
 
 // Em caso de 401, tenta renovar o token e reenviar a requisição original
 apiClient.interceptors.response.use(
