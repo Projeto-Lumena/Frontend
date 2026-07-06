@@ -4,25 +4,24 @@ import { ref } from 'vue'
 export const useInputStore = defineStore('inputStore', () => {
   const campos = ref({
     userInputNome: {
-        type: 'text',
-        label: '*Nome Completo',
-        placeholder: 'Escreva o seu nome completo.',
-        value: '',
-        required: true,
-        error: ''
+      type: 'text',
+      label: '*Nome Completo',
+      placeholder: 'Escreva o seu nome completo.',
+      value: '',
+      required: true,
+      error: ''
     },
 
-     userInputDataNascimento: {
-      type: 'text',
+    userInputDataNascimento: {
+      type: 'date',
       label: '*Data de nascimento',
-      placeholder: 'Escreva a sua data de nascimento.',
       value: '',
       required: true,
       error: ''
     },
 
     userInputTelefone: {
-      type: 'text',
+      type: 'tel',
       label: '*Telefone',
       placeholder: 'Escreva o seu telefone.',
       value: '',
@@ -49,15 +48,22 @@ export const useInputStore = defineStore('inputStore', () => {
     },
 
   })
-  
- const resetForm = () => {
+
+  const resetForm = () => {
     Object.values(campos.value).forEach(campo => {
       campo.value = ''
     })
   }
 
+  const resetErrors = () => {
+    Object.values(campos.value).forEach(campo => {
+      campo.error = '';
+    });
+  }
+
   return {
     campos,
-    resetForm
+    resetForm,
+    resetErrors
   }
 })

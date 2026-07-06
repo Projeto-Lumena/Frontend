@@ -1,6 +1,6 @@
 <script setup>
 import { onMounted, ref, computed } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import Banner from '@/components/BannerComponent.vue'
 import { useBannerStore } from '@/stores/useBannerStore'
@@ -9,6 +9,7 @@ import FilterComponent from '@/components/FilterComponent.vue'
 import InstallButton from '../components/InstallButton.vue';
 
 const route = useRoute();
+const router = useRouter()
 const store = useBannerStore()
 const storeProducts = useProductsStore()
 
@@ -21,6 +22,12 @@ onMounted(() => {
     setTimeout(() => {
       showLoginMessage.value = false
     }, 4000)
+
+    // Remove o parâmetro da URL sem sair da página
+    router.replace({
+      path: route.path,
+      query: {}
+    })
   }
 })
 
@@ -128,11 +135,16 @@ const productsFiltradas = computed(() => {
 <template>
   <Banner :imagens="store.getBanners('home')" />
 
-  <transition name="fade">
-    <div v-if="showLoginMessage" class="bg-[#0C2645] text-white px-6 py-3 text-center">
-      Login realizado com sucesso!
+  <Transition name="fade">
+    <div v-if="showLoginMessage" class="fixed top-30 left-1/2 -translate-x-1/2 z-50
+           flex items-center gap-2
+           rounded-lg border border-green-200
+           bg-green-50 px-6 py-3
+           text-green-700 shadow-lg">
+      <span class="text-lg">✓</span>
+      <span>Login realizado com sucesso! Seja bem-vindo(a).</span>
     </div>
-  </transition>
+  </Transition>
 
   <FilterComponent @aplicar="aplicarFiltros" @limpar="limparFiltros" />
 
