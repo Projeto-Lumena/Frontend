@@ -2,9 +2,10 @@
 import { computed, ref, onMounted } from 'vue'
 import { useUserStore } from '@/stores/userInfoStore'
 import { useAuthStore } from '@/stores/auth'
-import { useRouter } from 'vue-router'
+import { useRouter, useRoute } from 'vue-router'
 
 const router = useRouter()
+const route = useRoute()
 const authStore = useAuthStore()
 const userStore = useUserStore()
 
@@ -14,15 +15,19 @@ const pedidos = computed(() => userStore.pedidos)
 const mensagemParabens = ref(false)
 
 onMounted(async () => {
-
   await userStore.fetchUser()
 
-  if (userStore.cadastroRealizado) {
+  if (route.query.cadastro === 'success') {
     mensagemParabens.value = true
+
+    // Remove o parâmetro da URL para não aparecer novamente
+    router.replace({
+      path: route.path,
+      query: {}
+    })
 
     setTimeout(() => {
       mensagemParabens.value = false
-      userStore.cadastroRealizado = false
     }, 3000)
   }
 })
