@@ -16,6 +16,17 @@ export const useAuthStore = defineStore('auth', () => {
     localStorage.setItem('refresh_token', data.refresh);
   }
 
+  async function register(userData) {
+  // Cria o usuário
+  await authApi.register(userData);
+
+  // Faz login automaticamente
+  await login(
+    userData.email,
+    userData.password
+  );
+}
+
   function logout() {
     accessToken.value = null;
     refreshToken.value = null;
@@ -39,5 +50,5 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  return { accessToken, refreshToken, isAuthenticated, login, logout, updateProfile };
+  return { accessToken, refreshToken, isAuthenticated, login, register, logout, updateProfile };
 });

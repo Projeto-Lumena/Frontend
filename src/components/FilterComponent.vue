@@ -56,8 +56,8 @@ const limparFiltros = () => {
                             class="transition-transform duration-300">
                     </button>
                     <div v-if="mostrarColecao" class="px-4 py-2 grid grid-cols-2">
-                        <label><input type="checkbox" value="3" v-model="colecoesSelecionadas"> Aromas Doces</label>
-                        <label><input type="checkbox" value="2" v-model="colecoesSelecionadas"> Aromas Cítricos</label>
+                        <label><input type="checkbox" value="2" v-model="colecoesSelecionadas"> Aromas Doces</label>
+                        <label><input type="checkbox" value="3" v-model="colecoesSelecionadas"> Aromas Cítricos</label>
                         <label><input type="checkbox" value="1" v-model="colecoesSelecionadas"> Aromas Florais</label>
                         <label><input type="checkbox" value="4" v-model="colecoesSelecionadas"> Lembrancinhas</label>
                     </div>

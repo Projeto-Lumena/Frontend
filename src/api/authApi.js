@@ -5,6 +5,10 @@ export default {
     return apiClient.post('/token/', { email, password });
   },
 
+  register(userData) {
+    return apiClient.post('/registro/', userData);
+  },
+
   getMe() {
     return apiClient.get('/usuarios/me/');
   },
@@ -12,7 +16,7 @@ export default {
     const formData = new FormData();
     formData.append('file', file);
     if (description) formData.append('description', description);
-    return apiClient.post('/uploads/images/', formData, {
+    return apiClient.post('/media/images/', formData, {
       headers: { 'Content-Type': 'multipart/form-data' },
     });
   },

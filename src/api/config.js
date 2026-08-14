@@ -16,6 +16,8 @@ apiClient.interceptors.request.use((config) => {
   return config;
 });
 
+const BASE_URL = import.meta.env.VITE_API_URL;
+
 // Em caso de 401, tenta renovar o token e reenviar a requisição original
 apiClient.interceptors.response.use(
   (response) => response,
