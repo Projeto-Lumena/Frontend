@@ -137,11 +137,7 @@ const productsFiltradas = computed(() => {
   <Banner :imagens="store.getBanners('home')" />
 
   <Transition name="fade">
-    <div v-if="showLoginMessage" class="fixed top-30 left-1/2 -translate-x-1/2 z-50
-           flex items-center gap-2
-           rounded-lg border border-green-200
-           bg-green-50 px-6 py-3
-           text-green-700 shadow-lg">
+    <div v-if="showLoginMessage" class="fixed top-30 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-6 py-3 text-green-700 shadow-lg">
       <span class="text-lg">✓</span>
       <span>Login realizado com sucesso! Seja bem-vindo(a).</span>
     </div>
