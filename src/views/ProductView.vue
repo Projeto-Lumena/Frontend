@@ -60,7 +60,7 @@ const selecionadaPrecoFormatado = computed(() => {
         <div v-else-if="productsStore.error" class="px-6 mt-6 text-[#2C2828] font-semibold">
             {{ productsStore.error }}
         </div>
-        <div v-else class="lg:flex lg:justify-between lg:m-20 m-5 grid-cols-2">
+        <div v-else class="lg:flex md:justify-between lg:justify-around lg:m-20 m-5 grid-cols-2">
             <div class="lg:max-w-[50%]">
                 <div v-if="!product" class="px-6 mt-6 text-[#2C2828] font-semibold">
                     Produto não encontrado.
