@@ -12,12 +12,19 @@ export default {
   getMe() {
     return apiClient.get('/usuarios/me/');
   },
+
+  updateProfile(id, data) {
+    return apiClient.patch(`/usuarios/${id}/`, data);
+  },
+
   uploadImage(file, description = '') {
     const formData = new FormData();
     formData.append('file', file);
-    if (description) formData.append('description', description);
-    return apiClient.post('/media/images/', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
+
+    if (description) {
+      formData.append('description', description);
+    }
+
+    return apiClient.post('/media/images/', formData);
   },
 };

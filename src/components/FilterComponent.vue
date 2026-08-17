@@ -28,7 +28,7 @@ const limparFiltros = () => {
     <div class="m-6 sm:m-9 md:m-13 lg:m-23">
 
         <button @click="mostrarFiltros = !mostrarFiltros"
-            class="border border-[#A9A9A9] w-full lg:w-auto lg:mx-auto lg:block lg:p-4 p-2 text-[#2C2828]">
+            class="border border-[#A9A9A9] w-full lg:block lg:p-3 p-2 text-[#2C2828]">
             {{ mostrarFiltros ? '- Filtros' : '+ Filtros' }}
         </button>
 

@@ -6,6 +6,7 @@ export const useUserStore = defineStore('userStore', {
     cadastroRealizado: true,
 
     user: {
+      id: null,
       name: '',
       email: '',
       telefone: '',
@@ -21,9 +22,10 @@ export const useUserStore = defineStore('userStore', {
       try {
         const { data } = await authApi.getMe()
 
-        console.log(data)
+        console.log('Usuário recebido:', data)
 
         this.user = {
+          id: data.id,
           name: data.name,
           email: data.email,
           telefone: data.telefone,
@@ -32,7 +34,7 @@ export const useUserStore = defineStore('userStore', {
         }
 
       } catch (error) {
-        console.log(error)
+        console.error('Erro ao buscar usuário:', error)
       }
     }
   }
