@@ -97,12 +97,12 @@ const selecionadaPrecoFormatado = computed(() => {
                         Adicionar à sacola
                     </button>
                 </div>
-                <div class="mt-10 lg:mt-15 ">
-                    <p class="text-[#2C2828] text-lg font-semibold mb-2">Detalhes:</p>
-                    <p class="text-[#2C2828] text-sm lg:text-lg">
-                        {{ product.descricao }}
-                    </p>
-                </div>
+                <!-- <div class="mt-10 lg:mt-15 "> -->
+                    <!-- <p class="text-[#2C2828] text-lg font-semibold mb-2">Detalhes:</p> -->
+                    <!-- <p class="text-[#2C2828] text-sm lg:text-lg"> -->
+                        <!-- {{ product.descricao }} -->
+                    <!-- </p> -->
+                <!-- </div> -->
             </div>
         </div>
     </div>
