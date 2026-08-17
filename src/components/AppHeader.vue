@@ -32,19 +32,16 @@ function handleLogout() {
                         </button>
                     </li>
                     <li class="w-20 mb-2 xl:mr-30 lg:ml-8">
-                        <img src="/img/logo.svg" alt="Lumena">
-                    </li>
-                    <li class="hidden md:flex gap-10 text-white font-sen xl:mr-40 2xl:mr-70">
-                        <router-link to="/">Início</router-link>
-                        <router-link to="/produtos">Produtos</router-link>
-                        <router-link to="/perfil">Perfil</router-link>
-                        <router-link to="/sacola">Sacola</router-link>
+                        <router-link to="/">
+                            <img src="/img/logo.svg" alt="Lumena">
+                        </router-link>
                     </li>
                 </ul>
             </li>
             <li>
                 <ul class="flex items-center gap-5 xl:gap-15 xl:mr-10">
-                    <li class="text-white border-b flex w-20 pb-1 gap-5 font-sen md:w-50 md:gap-30 xl:w-80 2xl:gap-60">
+                    <li
+                        class="text-white border-b flex w-20 pb-1 gap-5 font-sen md:w-50 md:gap-30 xl:w-80  justify-between 2xl:gap-60">
                         <p>Buscar</p> <img src="/icons/procurar.svg" alt="Procura">
                     </li>
                     <li>
