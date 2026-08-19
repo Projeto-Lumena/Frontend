@@ -49,7 +49,7 @@ onUnmounted(() => {
 </script>
 <template>
     <div>
-        <div class="relative w-full h-full mt-25">
+        <div class="relative w-full h-full md:mt-25">
             <img :src="mobile ? imagens[primeiro].mobile : imagens[primeiro].desktop" class="w-full h-full object-cover transition-all duration-400"/>
 
             <button @click="anterior" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 rounded">

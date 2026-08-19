@@ -5,7 +5,7 @@ export const useBannerStore = defineStore('banner', {
     banners: {
        home: [
         {
-          mobile: '/img/banner1-mobile.svg',
+          mobile: '/img/banner1-mobile.png',
           desktop: '/img/banner1-desktop.svg'
         },
         {
