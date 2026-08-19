@@ -61,9 +61,9 @@ async function handleLogin() {
 }
 </script>
 <template>
-  <div class="min-h-screen flex flex-col lg:flex-row mt-20 lg:mt-10">
+  <div class="min-h-screen flex flex-col lg:flex-row md:mt-20 lg:mt-10">
     <div class="w-full lg:w-1/2 flex-col px-6 lg:px-15">
-      <div class="max-w-md mx-auto lg:my-20 w-full mt-20 lg:mt-40">
+      <div class="max-w-md mx-auto lg:my-20 w-full mt-15 md:mt-20 lg:mt-40">
         <h1 class="text-3xl text-center text-[#0C2645] font-[Cinzel] md:text-4xl lg:text-5xl">
           Login
         </h1>
