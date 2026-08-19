@@ -60,7 +60,7 @@ const selecionadaPrecoFormatado = computed(() => {
         <div v-else-if="productsStore.error" class="px-6 mt-6 text-[#2C2828] font-semibold">
             {{ productsStore.error }}
         </div>
-        <div v-else class="lg:flex lg:justify-between lg:m-20 m-5 grid-cols-2">
+        <div v-else class="lg:flex md:justify-between lg:justify-around lg:m-20 m-5 grid-cols-2">
             <div class="lg:max-w-[50%]">
                 <div v-if="!product" class="px-6 mt-6 text-[#2C2828] font-semibold">
                     Produto não encontrado.
@@ -97,12 +97,12 @@ const selecionadaPrecoFormatado = computed(() => {
                         Adicionar à sacola
                     </button>
                 </div>
-                <div class="mt-10 lg:mt-15 ">
-                    <p class="text-[#2C2828] text-lg font-semibold mb-2">Detalhes:</p>
-                    <p class="text-[#2C2828] text-sm lg:text-lg">
-                        {{ product.descricao }}
-                    </p>
-                </div>
+                <!-- <div class="mt-10 lg:mt-15 "> -->
+                    <!-- <p class="text-[#2C2828] text-lg font-semibold mb-2">Detalhes:</p> -->
+                    <!-- <p class="text-[#2C2828] text-sm lg:text-lg"> -->
+                        <!-- {{ product.descricao }} -->
+                    <!-- </p> -->
+                <!-- </div> -->
             </div>
         </div>
     </div>
