@@ -2,9 +2,12 @@
 import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
+import { useBagStore } from '@/stores/bag.js'
 
 const route = useRoute()
 const productsStore = useProductsStore()
+const bagStore = useBagStore()
+const addToBagMessage = ref(false)
 
 onMounted(async () => {
     if (!productsStore.products?.length) {
@@ -51,8 +54,35 @@ const selecionadaPrecoFormatado = computed(() => {
     return Number(p).toFixed(2).replace('.', ',')
 })
 
+function adicionarASacola() {
+    if (!product.value || !selectedPreco.value) return
+
+    bagStore.addToBag({
+        id: selectedPreco.value.id,
+        produtoId: product.value.id,
+        nome: product.value.nome,
+        tamanho: selectedPreco.value.tamanho,
+        preco: selectedPreco.value.preco,
+        imagem: product.value.imagem?.url
+    })
+
+    addToBagMessage.value = true
+
+    setTimeout(() => {
+        addToBagMessage.value = false
+    }, 4000)
+}
+
 </script>
 <template>
+    <Transition name="fade">
+        <div v-if="addToBagMessage" class="bottom-25 md:bottom-auto md:top-30 md:left-1/2 md:-translate-x-1/2 fixed z-50 flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-10 py-3 text-green-700 shadow-lg">
+            <span class="text-lg">✓</span>
+            <span>
+                Produto adicionado à sacola!
+            </span>
+        </div>
+    </Transition>
     <div class="pb-20 md:pt-30">
         <div v-if="productsStore.loading" class="px-6 mt-6 text-[#2C2828] font-semibold">
             Carregando...
@@ -93,7 +123,7 @@ const selecionadaPrecoFormatado = computed(() => {
                     <span class="font-semibold">R$ {{ selecionadaPrecoFormatado }}</span>
                 </div>
                 <div class="mt-3 lg:mt-7 flex gap-3">
-                    <button class="flex-1 bg-[#0C2645] text-white py-3 font-semibold">
+                    <button @click="adicionarASacola" class="flex-1 bg-[#0C2645] text-white py-3 font-semibold">
                         Adicionar à sacola
                     </button>
                 </div>
@@ -107,3 +137,14 @@ const selecionadaPrecoFormatado = computed(() => {
         </div>
     </div>
 </template>
+<style scoped>
+.fade-enter-active,
+.fade-leave-active {
+    transition: opacity 0.5s;
+}
+
+.fade-enter-from,
+.fade-leave-to {
+    opacity: 0;
+}
+</style>
