@@ -61,7 +61,7 @@ function handleLogout() {
             </li>
         </ul>
     </header>
-    <div class="md:hidden fixed bottom-0 z-50 w-full h-20 bg-[#0C2645] rounded-t-2xl">
+    <div class="md:hidden fixed bottom-0 z-50 w-full h-25 bg-[#0C2645] rounded-t-2xl">
         <ul class="h-full flex items-center justify-center">
             <li class="h-full w-30">
                 <RouterLink to="/sacola" class="h-full w-full flex flex-col items-center justify-center gap-1 text-white"
