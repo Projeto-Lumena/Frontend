@@ -119,19 +119,15 @@ async function handleRegister() {
         case 'name':
           store.campos.userInputNome.error = errors[campo][0]
           break
-
         case 'email':
           store.campos.userInputEmail.error = errors[campo][0]
           break
-
         case 'telefone':
           store.campos.userInputTelefone.error = errors[campo][0]
           break
-
         case 'nascimento':
           store.campos.userInputDataNascimento.error = errors[campo][0]
           break
-
         case 'password':
           store.campos.userInputSenha.error = errors[campo][0]
           break
@@ -142,63 +138,30 @@ async function handleRegister() {
   }
 }
 </script>
-
 <template>
-  <div class="min-h-screen flex flex-col lg:flex-row md:mt-20 lg:mt-10">
-
+  <div class="min-h-screen flex flex-col lg:flex-row md:mt-15 lg:mt-5">
     <div class="w-full lg:w-1/2 flex-col px-6 lg:px-30">
-
       <div class="max-w-lg mx-auto w-full mt-15 md:mt-20 lg:mt-40">
-
-        <h1 class="text-3xl md:text-4xl lg:text-5xl text-center text-[#0C2645] font-[Cinzel]">
-          Cadastro
-        </h1>
-
-        <Input v-for="(campo, key) in store.campos" :key="key" :campo="campo"
-          @update="(value) => campo.value = value" />
-
-        <!-- FOTO DE PERFIL -->
+        <h1 class="text-3xl md:text-4xl lg:text-5xl text-center text-[#0C2645] font-[Cinzel]">Cadastro </h1>
+        <Input v-for="(campo, key) in store.campos" :key="key" :campo="campo" @update="(value) => campo.value = value" />
         <div class="mt-6">
-
-          <label class="block text-sm mb-2">
-            Foto de perfil
-          </label>
-
-          <!-- PREVIEW -->
+          <label class="block text-sm mb-2"> Foto de perfil </label>
           <div v-if="fotoPreview" class="mb-3 flex items-center gap-3">
             <img :src="fotoPreview" alt="Preview da foto" class="w-[90px] h-[90px] object-cover border border-gray-300">
-
-            <span class="text-sm text-gray-500">
-              Foto selecionada
-            </span>
+            <span class="text-sm text-gray-500"> Foto selecionada </span>
           </div>
-
-          <!-- BOTÃO -->
-          <label class="inline-block border border-[#0C2645] px-4 py-2 cursor-pointer text-[#0C2645]">
-            Adicionar foto
-
+          <label class="inline-block border border-[#0C2645] px-4 py-2 cursor-pointer text-[#0C2645]"> Adicionar foto
             <input type="file" accept="image/jpeg,image/png" class="hidden" @change="handleFotoChange">
           </label>
-
         </div>
-
         <div class="flex flex-col gap-4 sm:flex-row sm:justify-between my-10">
-
           <Button label="Limpar" variant="azul" @click="store.resetForm" />
-
           <Button label="Cadastrar-me" @click="handleRegister" :disabled="uploadingFoto" />
-
         </div>
-
       </div>
-
     </div>
-
     <div class="hidden lg:block lg:w-1/2 h-screen">
-
       <img src="/img/imgCadastro.png" alt="" class="w-full h-full object-cover">
-
     </div>
-
   </div>
 </template>

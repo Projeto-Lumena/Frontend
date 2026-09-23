@@ -5,16 +5,16 @@ export const useBannerStore = defineStore('banner', {
     banners: {
        home: [
         {
-          mobile: '/img/banner1-mobile.png',
-          desktop: '/img/banner1-desktop.svg'
+          mobile: '/img/banners/banner1-mobile.png',
+          desktop: '/img/banners/banner1-desktop.svg'
         },
         {
-          mobile: '/img/banner2-mobile.svg',
-          desktop: '/img/banner2-desktop.svg'
+          mobile: '/img/banners/banner2-mobile.svg',
+          desktop: '/img/banners/banner2-desktop.svg'
         },
         {
-          mobile: '/img/banner3-mobile.svg',
-          desktop: '/img/banner3-desktop.svg'
+          mobile: '/img/banners/banner3-mobile.svg',
+          desktop: '/img/banners/banner3-desktop.svg'
         }
       ]}
   }),

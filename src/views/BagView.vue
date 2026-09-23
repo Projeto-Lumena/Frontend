@@ -66,7 +66,7 @@ function cancelarRemocao() {
             <span> Item removido da sacola! </span>
         </div>
     </Transition>
-    <h1 class="text-4xl text-center text-[#0C2645] font-[Cinzel] md:text-4xl lg:text-5xl mt-10 mb-10 lg:text-left lg:max-w-[1250px] lg:mt-45 lg:mx-auto">
+    <h1 class="text-4xl text-center text-[#0C2645] font-[Cinzel] md:text-4xl lg:text-5xl mt-10 mb-10 lg:text-left lg:max-w-[1250px] lg:mt-40 lg:mx-auto">
         Sacola </h1>
     <section class="mx-auto w-[calc(100%-54px)] max-w-[900px] mb-20 lg:max-w-[1250px] lg:grid lg:grid-cols-[1fr_375px] lg:gap-12 lg:items-start">
         <div class="lg:grid lg:grid-cols-2 lg:gap-x-5 lg:gap-y-5">

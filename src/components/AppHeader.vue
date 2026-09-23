@@ -22,7 +22,7 @@ function handleLogout() {
 }
 </script>
 <template>
-    <header class="hidden md:block fixed z-50 top-0 left-0 w-full bg-[#0C2645] p-8 rounded-b-2xl">
+    <header class="hidden md:block fixed z-50 top-0 left-0 w-full bg-[#0C2645] p-5">
         <ul class="flex gap-5 items-center justify-between sm:gap-20 md:gap-10">
             <li>
                 <ul class="flex items-center gap-5">
@@ -61,33 +61,33 @@ function handleLogout() {
             </li>
         </ul>
     </header>
-    <div class="md:hidden fixed bottom-0 z-50 w-full h-25 bg-[#0C2645] rounded-t-2xl">
+    <div class="md:hidden fixed bottom-0 z-50 w-full h-15 bg-[#0C2645] rounded-t-2xl">
         <ul class="h-full flex items-center justify-center">
             <li class="h-full w-30">
-                <RouterLink to="/sacola" class="h-full w-full flex flex-col items-center justify-center gap-1 text-white"
+                <RouterLink to="/sacola" class="h-full w-full flex flex-col items-center justify-center text-white"
                     active-class="text-[#FDA202]">
-                    <img src="/icons/sacola.svg" alt="Sacola" class="w-6 h-6">
+                    <img src="/icons/sacola.svg" alt="Sacola" class="w-5 h-5">
                     <span class="text-sm font-sen">Sacola </span>
                 </RouterLink>
             </li>
             <li class="h-full w-30">
-                <RouterLink to="/" class="h-full w-full flex flex-col items-center justify-center gap-1 text-white"
+                <RouterLink to="/" class="h-full w-full flex flex-col items-center justify-center text-white"
                     active-class="text-[#FDA202]">
-                    <img src="/icons/home.svg" alt="Home" class="w-6 h-6">
+                    <img src="/icons/home.svg" alt="Home" class="w-5 h-5">
                     <span class="text-sm font-sen">Home</span>
                 </RouterLink>
             </li>
             <li class="h-full w-30">
                 <RouterLink :to="authStore.isAuthenticated ? '/perfil' : '/login'"
-                    class="h-full w-full flex flex-col items-center justify-center gap-1 text-white"
+                    class="h-full w-full flex flex-col items-center justify-center text-white"
                     active-class="text-[#FDA202]">
-                    <img src="/icons/usuario.svg" alt="Perfil" class="w-6 h-6">
+                    <img src="/icons/usuario.svg" alt="Perfil" class="w-5 h-5">
                     <span class="text-sm font-sen"> Perfil</span>
                 </RouterLink>
             </li> 
             <button v-if="authStore.isAuthenticated" @click="handleLogout"
-                    class="h-full w-30 flex flex-col items-center justify-center gap-1 text-white">
-                    <img class="w-6 h-6" src="/icons/user-logout-white.svg" alt="Logout">
+                    class="h-full w-30 flex flex-col items-center justify-center text-white">
+                    <img class="w-5 h-5" src="/icons/user-logout-white.svg" alt="Logout">
                     <span class="text-sm font-sen">Sair</span>
             </button>
         </ul>

@@ -83,7 +83,7 @@ function adicionarASacola() {
             </span>
         </div>
     </Transition>
-    <div class="pb-20 md:pt-30">
+    <div class="pb-20 md:pt-15">
         <div v-if="productsStore.loading" class="px-6 mt-6 text-[#2C2828] font-semibold">
             Carregando...
         </div>
