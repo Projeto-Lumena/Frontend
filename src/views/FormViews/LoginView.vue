@@ -72,9 +72,9 @@ async function handleLogin() {
           class="mb-4 mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {{ errorMessage }}
         </div>
-        <div class="flex flex-col gap-4 sm:flex-row sm:justify-between my-10">
-          <Button label="Fazer Login" variant="azul" @click="handleLogin" />
-          <Button label="Limpar" @click="store.resetForm" />
+        <div class="flex gap-4 flex-row justify-between my-10">
+          <Button label="Fazer Login" class="hover:shadow-lg w-1/2" variant="azul" @click="handleLogin" />
+          <Button label="Limpar" class="hover:shadow-lg w-1/2" @click="store.resetForm" />
         </div>
         <p class="mb-1">Ainda não possui um cadastro?</p>
         <RouterLink to="userForm">

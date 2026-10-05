@@ -45,6 +45,7 @@ function cancelarRemocao() {
 }
 </script>
 <template>
+    
     <Transition name="fade">
         <div v-if="remove" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 px-5">
             <div class="w-full max-w-[400px] bg-white p-6 text-center shadow-xl">
@@ -96,8 +97,7 @@ function cancelarRemocao() {
             <div v-if="items.length === 0" class="text-center text-[#2C2828] py-10 lg:col-span-2">Sua sacola está vazia.
             </div>
         </div>
-        <div
-            class="fixed bottom-20 z-50 bg-[#0C2645] w-full left-0 right-0 lg:sticky lg:top-auto lg:bottom-8 lg:self-end lg:w-full lg:bg-transparent lg:z-10">
+        <div class="fixed bottom-15 z-50 bg-[#0C2645] w-full left-0 right-0 lg:sticky lg:top-auto lg:bottom-8 lg:self-end lg:w-full lg:bg-transparent lg:z-10">
             <div class="border-t border-[#BFC0C0] bg-white">
                 <div class="flex justify-between px-4 py-2 text-sm lg:px-5 lg:py-3">
                     <span>Subtotal:</span>
@@ -108,11 +108,12 @@ function cancelarRemocao() {
                     <span> R${{ formatPrice(bagStore.descontos) }}</span>
                 </div>
             </div>
-            <button type="button"
-                class="w-full h-15 bg-[#0C2645] text-white text-lg flex items-center justify-between px-4 hover:bg-[#163657] transition lg:h-[52px] lg:px-5">
-                <span>Finalizar pedido</span>
-                <span> R${{ formatPrice(bagStore.total) }} </span>
-            </button>
+            <RouterLink to="/fazer-pedido" class="w-full">
+                <button type="button" class="w-full h-15 bg-[#0C2645] text-white text-lg flex items-center justify-between px-4 hover:bg-[#163657] transition lg:h-[52px] lg:px-5">
+                    <span>Finalizar pedido</span>
+                    <span> R${{ formatPrice(bagStore.total) }} </span>
+                </button>
+            </RouterLink>
         </div>
     </section>
 </template>

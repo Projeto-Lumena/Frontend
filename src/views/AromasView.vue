@@ -6,11 +6,11 @@ const aromas = aromasStore.aromas
 </script>
 <template>
     <main class="bg-white min-h-screen pb-20">
-        <section class="pt-10 pb-10 lg:pt-20 lg:pb-16">
+        <section class="pt-10 pb-5 lg:pt-20 lg:pb-8">
             <h1 class="lg:mt-20 text-4xl text-center text-[#0C2645] font-[Cinzel] md:text-5xl lg:text-6xl"> Aromas </h1>
         </section>
-        <section class="max-w-[1200px] mx-auto px-6 py-10 lg:px-10">
-            <div v-for="(aroma, index) in aromas" :key="aroma.id" :id="aroma.id" class="grid lg:grid-cols-2  gap-8 lg:gap-16 items-center mt-10 mb-10">
+        <section class="max-w-[1200px] mx-auto px-6 lg:px-10">
+            <div v-for="(aroma, index) in aromas" :key="aroma.id" :id="aroma.id" class="grid lg:grid-cols-2  gap-8 lg:gap-16 items-center mt-8 mb-10">
                 <div :class="[ 'w-full aspect-square', 'border border-[#E7EAE9]', 'p-2', index % 2 !== 0 ? 'lg:order-2' : '' ]">
                     <div class="w-full h-full  bg-[#F5F5F5] flex items-center justify-center overflow-hidden">
                         <img v-if="aroma.imagem" :src="aroma.imagem" :alt="`Aroma ${aroma.nome}`" class="w-full h-full object-cover" />

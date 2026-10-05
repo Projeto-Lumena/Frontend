@@ -1,13 +1,46 @@
-import { ref, computed } from 'vue'
+import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
+import { useAuthStore } from '@/stores/auth'
 
 export const useBagStore = defineStore('bag', () => {
-  const items = ref(
-    JSON.parse(localStorage.getItem('lumena-bag') || '[]')
-  )
+  const authStore = useAuthStore()
+
+  const items = ref([])
+
+  function getBagKey() {
+    if (!authStore.userEmail) {
+      return null
+    }
+
+    return `lumena-bag-${authStore.userEmail}`
+  }
+
+  function loadBag() {
+    const key = getBagKey()
+
+    if (!key) {
+      items.value = []
+      return
+    }
+
+    try {
+      items.value = JSON.parse(
+        localStorage.getItem(key) || '[]'
+      )
+    } catch {
+      items.value = []
+    }
+  }
 
   function saveBag() {
-    localStorage.setItem('lumena-bag', JSON.stringify(items.value))
+    const key = getBagKey()
+
+    if (!key) return
+
+    localStorage.setItem(
+      key,
+      JSON.stringify(items.value)
+    )
   }
 
   function addToBag(product) {
@@ -28,7 +61,9 @@ export const useBagStore = defineStore('bag', () => {
   }
 
   function increaseQuantity(id) {
-    const item = items.value.find(item => item.id === id)
+    const item = items.value.find(
+      item => item.id === id
+    )
 
     if (item) {
       item.quantidade++
@@ -37,7 +72,9 @@ export const useBagStore = defineStore('bag', () => {
   }
 
   function decreaseQuantity(id) {
-    const item = items.value.find(item => item.id === id)
+    const item = items.value.find(
+      item => item.id === id
+    )
 
     if (!item) return
 
@@ -52,13 +89,17 @@ export const useBagStore = defineStore('bag', () => {
   }
 
   function removeFromBag(id) {
-    items.value = items.value.filter(item => item.id !== id)
+    items.value = items.value.filter(
+      item => item.id !== id
+    )
+
     saveBag()
   }
 
   const subtotal = computed(() => {
     return items.value.reduce(
-      (total, item) => total + item.preco * item.quantidade,
+      (total, item) =>
+        total + item.preco * item.quantidade,
       0
     )
   })
@@ -71,10 +112,24 @@ export const useBagStore = defineStore('bag', () => {
 
   const totalItems = computed(() => {
     return items.value.reduce(
-      (total, item) => total + item.quantidade,
+      (total, item) =>
+        total + item.quantidade,
       0
     )
   })
+  
+  function clearBag() {
+    items.value = []
+    saveBag()
+  }
+  
+  watch(
+    () => authStore.userEmail,
+    () => {
+      loadBag()
+    },
+    { immediate: true }
+  )
 
   return {
     items,
@@ -82,9 +137,11 @@ export const useBagStore = defineStore('bag', () => {
     descontos,
     total,
     totalItems,
+    loadBag,
     addToBag,
     increaseQuantity,
     decreaseQuantity,
-    removeFromBag
+    removeFromBag,
+    clearBag
   }
 })
