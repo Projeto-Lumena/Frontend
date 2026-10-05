@@ -143,8 +143,9 @@ async function handleRegister() {
     <div class="w-full lg:w-1/2 flex-col px-6 lg:px-30">
       <div class="max-w-lg mx-auto w-full mt-15 md:mt-20 lg:mt-40">
         <h1 class="text-3xl md:text-4xl lg:text-5xl text-center text-[#0C2645] font-[Cinzel]">Cadastro </h1>
+        <p class="mb-1 mt-10">Já possui uma conta?</p>
         <RouterLink to="/login">
-        <p class="mt-10 mb-5 hover:font-bold">Já possui uma conta? Faça Login.</p>
+          <Button label="Ir para página de Login"> </Button>
         </RouterLink>
         <Input v-for="(campo, key) in store.campos" :key="key" :campo="campo" @update="(value) => campo.value = value" />
         <div class="mt-6">
@@ -153,13 +154,13 @@ async function handleRegister() {
             <img :src="fotoPreview" alt="Preview da foto" class="w-[90px] h-[90px] object-cover border border-gray-300">
             <span class="text-sm text-gray-500"> Foto selecionada </span>
           </div>
-          <label class="inline-block border border-[#0C2645] px-4 py-2 cursor-pointer text-[#0C2645]"> Adicionar foto
+          <label class="inline-block border border-[#0C2645] px-4 py-2 cursor-pointer text-[#0C2645] hover:shadow-lg"> Adicionar foto
             <input type="file" accept="image/jpeg,image/png" class="hidden" @change="handleFotoChange">
           </label>
         </div>
-        <div class="flex flex-col gap-4 sm:flex-row sm:justify-between my-10">
-          <Button label="Limpar" @click="store.resetForm" />
-          <Button label="Cadastrar-me" variant="azul" @click="handleRegister" :disabled="uploadingFoto" />
+        <div class="flex gap-4 flex-row my-10">
+          <Button label="Cadastrar-me" class="hover:shadow-lg w-1/2" variant="azul" @click="handleRegister" :disabled="uploadingFoto" />
+          <Button label="Limpar" class="hover:shadow-lg w-1/2" @click="store.resetForm" />
         </div>
       </div>
     </div>
