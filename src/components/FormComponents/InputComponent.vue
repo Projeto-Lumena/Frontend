@@ -6,9 +6,6 @@ const { campo } = defineProps({
 const emit = defineEmits(['update'])
 
 const updateValue = (value) => {
-  // Limpa o erro ao começar a digitar novamente
-  campo.error = ''
-
   emit('update', value)
 }
 </script>

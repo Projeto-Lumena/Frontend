@@ -1,8 +1,20 @@
 import apiClient from './config.js';
 
 const comprasApi = {
-  getAll() {
-    return apiClient.get('/compra/');
+  async getAll() {
+    let page = 1
+    let all = []
+    let totalPages = 1
+
+    while (page <= totalPages) {
+      const res = await apiClient.get(`/compra/?page=${page}`)
+
+      all = all.concat(res.data.results)
+      totalPages = res.data.total_pages
+      page++
+    }
+
+    return all
   },
 
   getById(id) {

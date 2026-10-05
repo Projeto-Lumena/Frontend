@@ -22,8 +22,6 @@ onMounted(() => {
     setTimeout(() => {
       showLoginMessage.value = false
     }, 4000)
-
-    // Remove o parâmetro da URL sem sair da página
     router.replace({
       path: route.path,
       query: {}
@@ -75,7 +73,7 @@ const productsAgrupadas = computed(() => {
 
     if (!mapa[produto.nome]) {
       mapa[produto.nome] = {
-        id: produto.id, 
+        id: produto.id,
         nome: produto.nome,
         imagem: produto.imagem,
         categoriaIds: produto.categorias || [],

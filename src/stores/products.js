@@ -21,7 +21,7 @@ export const useProductsStore = defineStore('products', () => {
 
       products.value = prodRes.data?.results || prodRes.data || prodRes
       productVariations.value = varRes || []
-    } catch (err) {
+    } catch {
       error.value = 'Erro ao carregar dados.'
     } finally {
       loading.value = false

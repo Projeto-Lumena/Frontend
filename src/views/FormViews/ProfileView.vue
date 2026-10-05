@@ -203,7 +203,7 @@ function handleLogout() {
             </li>
             <li class="mt-2">
               <img src="/icons/telefone.svg" alt="Telefone" class="inline-block w-4 mr-1">
-              {{ user.telefone }}  
+              {{ user.telefone }}
             </li>
           </ul>
           <div class="flex gap-2">
@@ -260,39 +260,20 @@ function handleLogout() {
         <p class="text-sm text-gray-500 mt-2">  Quando você realizar uma compra, ela aparecerá aqui. </p>
       </div>
      <div v-else class="grid gap-4 md:grid-cols-2 xl:grid-cols-2">
-    <RouterLink
-        v-for="pedido in pedidos"
-        :key="pedido.id"
-        :to="{ name: 'pedido', params: { id: pedido.id } }"
-        class="block border border-gray-300 p-3 bg-white transition hover:border-[#0C2645]"
-    >
+    <RouterLink v-for="pedido in pedidos" :key="pedido.id" :to="{ name: 'pedido', params: { id: pedido.id } }" class="block border border-gray-300 p-3 bg-white transition hover:border-[#0C2645]">
         <div class="flex gap-3">
-            <img
-                :src="pedido.imagem"
-                alt="Produto"
-                class="w-[85px] h-[85px] object-cover"
-            >
-
+            <img :src="pedido.imagem" alt="Produto" class="w-[85px] h-[85px] object-cover">
             <div class="flex-1">
                 <div class="flex justify-between gap-2">
-                    <h3 class="text-[14px] leading-4">
-                        {{ pedido.nome }}
-                    </h3>
-
-                    <span class="text-[10px] text-[#2C2828] whitespace-nowrap">
-                        {{ pedido.status }}
-                    </span>
+                    <h3 class="text-[14px] leading-4"> {{ pedido.nome }} </h3>
+                    <span class="text-[10px] text-[#2C2828] whitespace-nowrap">  {{ pedido.status }} </span>
                 </div>
-
                 <div class="text-[11px] text-[#2C2828] mt-2">
                     <p>{{ pedido.data }}</p>
                     <p>Tamanho: {{ pedido.tamanho }}</p>
                     <p>Quantidade: {{ pedido.quantidade }}</p>
                 </div>
-
-                <p class="mt-2 text-[14px]">
-                    Total: {{ pedido.total }}
-                </p>
+                <p class="mt-2 text-[14px]"> Total: {{ pedido.total.toFixed(2).replace('.', ',') }} </p>
             </div>
             </div>
       </RouterLink>

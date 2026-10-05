@@ -1,116 +1,92 @@
 import { defineStore } from 'pinia'
 import authApi from '../api/authApi'
-import { useAuthStore } from './auth'
+import comprasApi from '../api/comprasApi'
 
 export const useUserStore = defineStore('userStore', {
-  state: () => ({
-    cadastroRealizado: true,
+    state: () => ({
+        cadastroRealizado: true,
 
-    user: {
-      id: null,
-      name: '',
-      email: '',
-      telefone: '',
-      nascimento: '',
-      foto: ''
-    },
+        user: {
+            id: null,
+            name: '',
+            email: '',
+            telefone: '',
+            nascimento: '',
+            foto: ''
+        },
 
-    pedidos: []
-  }),
+        pedidos: []
+    }),
 
-  actions: {
-    getPedidosKey() {
-      const authStore = useAuthStore()
+    actions: {
+async carregarPedidos() {
+    try {
+        const pedidosApi = await comprasApi.getAll()
+        this.pedidos = pedidosApi.map(pedido => {
+            const primeiroItem = pedido.itens?.[0] || {}
+            const produto = primeiroItem.produto || {}
+            const variacao = primeiroItem.variacao || {}
 
-      if (!authStore.userEmail) {
-        return null
-      }
+            const imagem = produto.imagem?.url || produto.imagem || ''
 
-      return `lumena-pedidos-${authStore.userEmail}`
-    },
+            const quantidade = (pedido.itens || []).reduce(
+                (total, item) => total + Number(item.quantidade || 0),
+                0
+            )
 
-    carregarPedidos() {
-      const key = this.getPedidosKey()
+            const dadosSalvos = localStorage.getItem(`lumena-pedido-${pedido.id}`)
 
-      if (!key) {
+            let dadosLocais = {}
+
+            if (dadosSalvos) {
+                try {
+                    dadosLocais = JSON.parse(dadosSalvos)
+                } catch (error) {
+                    console.error('Erro ao ler pedido local:', error)
+                }
+            }
+
+            return {
+                id: pedido.id,
+                nome: dadosLocais.nome || produto.nome || 'Produto',
+                imagem: dadosLocais.imagem || imagem,
+                tamanho: dadosLocais.tamanho || variacao.tamanho || '',
+                quantidade: dadosLocais.quantidade || quantidade,
+                total: dadosLocais.total ?? Number(pedido.total || 0),
+                status: dadosLocais.status || (
+                    pedido.status === 'Finalizado'
+                        ? 'Pedido Realizado'
+                        : pedido.status
+                ),
+                data: dadosLocais.data || '',
+                itens: pedido.itens || []
+            }
+        })
+
+    } catch (error) {
+        console.error('ERRO AO CARREGAR PEDIDOS:', error)
+        console.error('RESPOSTA DO BACKEND:', error.response?.data)
         this.pedidos = []
-        return
-      }
-
-      try {
-        const pedidosSalvos = localStorage.getItem(key)
-
-        if (!pedidosSalvos) {
-          this.pedidos = []
-          return
-        }
-
-        const pedidos = JSON.parse(pedidosSalvos)
-
-        // Remove pedidos duplicados pelo ID
-        const pedidosUnicos = pedidos.filter(
-          (pedido, index, array) =>
-            index === array.findIndex(item => item.id === pedido.id)
-        )
-
-        this.pedidos = pedidosUnicos
-
-        // Atualiza o localStorage já sem os duplicados
-        localStorage.setItem(
-          key,
-          JSON.stringify(pedidosUnicos)
-        )
-
-      } catch (error) {
-        console.error('Erro ao carregar pedidos:', error)
-        this.pedidos = []
-      }
-    },
-
-    adicionarPedido(pedido) {
-      const key = this.getPedidosKey()
-
-      if (!key) {
-        console.error('Usuário não identificado.')
-        return
-      }
-
-      const pedidoJaExiste = this.pedidos.some(
-        item => item.id === pedido.id
-      )
-
-      if (pedidoJaExiste) {
-        return
-      }
-
-      this.pedidos.unshift(pedido)
-
-      localStorage.setItem(
-        key,
-        JSON.stringify(this.pedidos)
-      )
-    },
-
-    async fetchUser() {
-      try {
-        const { data } = await authApi.getMe()
-
-        console.log('Usuário recebido:', data)
-
-        this.user = {
-          id: data.id,
-          name: data.name,
-          email: data.email,
-          telefone: data.telefone,
-          nascimento: data.nascimento,
-          foto: data.foto?.url || ''
-        }
-
-        this.carregarPedidos()
-
-      } catch (error) {
-        console.error('Erro ao buscar usuário:', error)
-      }
     }
-  }
+},
+        async fetchUser() {
+            try {
+                const { data } = await authApi.getMe()
+
+                this.user = {
+                    id: data.id,
+                    name: data.name || '',
+                    email: data.email || '',
+                    telefone: data.telefone || '',
+                    nascimento: data.nascimento || '',
+                    foto: data.foto?.url || data.foto || ''
+                }
+
+                await this.carregarPedidos()
+
+            } catch (error) {
+                console.error('Erro ao carregar usuário:', error)
+            }
+        }
+    }
 })

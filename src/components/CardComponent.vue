@@ -72,16 +72,16 @@ function adicionarASacola() {
         <div class="w-full max-w-md bg-white p-6 shadow-xl sm:rounded-lg">
           <div class="flex items-center justify-between mb-5">
             <h3 class="text-lg font-semibold text-[#0C2645]">  Escolha o tamanho </h3>
-            <button @click="fecharTamanhos" class="text-2xl text-[#0C2645]" >  ×
+            <button type="button" @click="fecharTamanhos" class="text-2xl text-[#0C2645]" >  ×
             </button>
           </div>
           <div class="grid grid-cols-3 gap-3">
-            <button v-for="variacao in variacoes" :key="variacao.id" @click="tamanhoSelecionado = variacao" class="border p-3 transition":class=" tamanhoSelecionado?.id === variacao.id ? 'border-[#0C2645] bg-[#0C2645] text-white' : 'border-[#E7EAE9] text-[#2C2828] hover:border-[#0C2645]'">
+            <button v-for="variacao in variacoes" :key="variacao.id" type="button" @click="tamanhoSelecionado = variacao" class="border p-3 transition" :class="tamanhoSelecionado?.id === variacao.id ? 'border-[#0C2645] bg-[#0C2645] text-white' : 'border-[#E7EAE9] text-[#2C2828] hover:border-[#0C2645]'">
               <span class="block font-semibold"> {{ variacao.tamanho }} </span>
               <span class="block text-sm mt-1"> R$ {{ variacao.preco.toFixed(2).replace('.', ',') }}</span>
             </button>
           </div>
-          <button @click="adicionarASacola" :disabled="!tamanhoSelecionado" class="w-full mt-6 bg-[#0C2645] text-white py-3 transition disabled:opacity-50" > Adicionar à sacola
+          <button type="button" @click="adicionarASacola" :disabled="!tamanhoSelecionado" class="w-full mt-6 bg-[#0C2645] text-white py-3 transition disabled:opacity-50" > Adicionar à sacola
           </button>
         </div>
       </div>
