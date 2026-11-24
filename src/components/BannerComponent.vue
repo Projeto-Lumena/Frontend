@@ -49,12 +49,14 @@ onUnmounted(() => {
 </script>
 <template>
     <div>
-        <div class="relative w-full h-full md:mt-20">
-            <img :src="mobile ? imagens[primeiro].mobile : imagens[primeiro].desktop" class="w-full h-full object-cover transition-all duration-400"/>
+        <div v-if="imagens.length" class="relative w-full h-full md:mt-20">
+            <img :src="mobile ? imagens[primeiro].mobile : imagens[primeiro].desktop" :alt="`Banner ${primeiro + 1}`" class="w-full h-full object-cover transition-all duration-400"/>
 
-            <button @click="anterior" class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 rounded">
+            <button v-if="imagens.length > 1" type="button" @click="anterior" aria-label="Banner anterior" class="absolute left-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded bg-black/40 text-white">
+                ‹
             </button>
-            <button @click="proximo" class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/40 text-white px-2 rounded">
+            <button v-if="imagens.length > 1" type="button" @click="proximo" aria-label="Próximo banner" class="absolute right-2 top-1/2 -translate-y-1/2 flex h-9 w-9 items-center justify-center rounded bg-black/40 text-white">
+                ›
             </button>
 
             <div class="absolute bottom-2 w-full flex justify-center gap-2">

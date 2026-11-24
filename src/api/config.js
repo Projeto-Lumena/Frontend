@@ -4,18 +4,23 @@ const apiClient = axios.create({
   baseURL: import.meta.env.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000/api/',
 });
 
-// Injeta o access token em todas as requisições
-apiClient.interceptors.request.use((config) => {
-  const token = localStorage.getItem('access_token');
-  if (token) {
-    config.headers.Authorization = `Bearer ${token}`;
+apiClient.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('access_token');
+
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+
+    return config;
+  },
+  (error) => {
+    return Promise.reject(error);
   }
-  return config;
-});
+);
 
 const BASE_URL = import.meta.env.VITE_API_URL;
-
-// Em caso de 401, tenta renovar o token e reenviar a requisição original
 apiClient.interceptors.response.use(
   (response) => response,
   async (error) => {

@@ -1,3 +1,4 @@
+
 import { ref } from 'vue'
 import { defineStore } from 'pinia'
 import productsApi from '@/api/productsApi'
@@ -8,21 +9,27 @@ export const useProductsStore = defineStore('products', () => {
   const productVariations = ref([])
   const loading = ref(false)
   const error = ref(null)
+  const variationsLoaded = ref(false)
 
-  async function fetchProducts() {
+  async function fetchProducts(params = {}) {
     loading.value = true
     error.value = null
 
     try {
-      const [prodRes, varRes] = await Promise.all([
-        productsApi.getAll(),
-        productVariationsApi.getAll(),
-      ])
+      const prodRes = await productsApi.getAll(params)
 
-      products.value = prodRes.data?.results || prodRes.data || prodRes
-      productVariations.value = varRes || []
+      products.value = prodRes
+
+      // Carrega as variações somente na primeira consulta.
+      if (!variationsLoaded.value) {
+        const varRes = await productVariationsApi.getAll()
+
+        productVariations.value = varRes || []
+        variationsLoaded.value = true
+      }
     } catch (err) {
       error.value = 'Erro ao carregar dados.'
+      console.error(err)
     } finally {
       loading.value = false
     }
@@ -45,14 +52,22 @@ export const useProductsStore = defineStore('products', () => {
 
   async function updateProduct(id, { title, imgAttachmentKey } = {}) {
     if (title !== undefined && !title.trim()) return
+
     error.value = null
     const payload = {}
+
     if (title !== undefined) payload.title = title.trim()
-    if (imgAttachmentKey != null) payload.img_attachment_key = imgAttachmentKey
+    if (imgAttachmentKey != null) {
+      payload.img_attachment_key = imgAttachmentKey
+    }
+
     try {
       const response = await productsApi.update(id, payload)
       const index = products.value.findIndex((p) => p.id === id)
-      if (index !== -1) products.value[index] = response.data
+
+      if (index !== -1) {
+        products.value[index] = response.data
+      }
     } catch (err) {
       error.value = 'Erro ao editar produto.'
       console.error(err)
@@ -64,6 +79,7 @@ export const useProductsStore = defineStore('products', () => {
 
     try {
       await productsApi.remove(id)
+
       products.value = products.value.filter((p) => p.id !== id)
     } catch (err) {
       error.value = 'Erro ao remover produto.'

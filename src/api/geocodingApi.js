@@ -27,7 +27,7 @@ function writeCache(key, value) {
             JSON.stringify(value)
         )
     } catch {
-       
+        // Armazenamento indisponível (modo privado/cheio): segue sem cache.
     }
 }
 

@@ -1,25 +1,49 @@
-import apiClient from './config.js';
+
+import apiClient from './config.js'
 
 const comprasApi = {
-  getAll() {
-    return apiClient.get('/compra/');
+  async getAll() {
+    let page = 1
+    let all = []
+    let totalPages = 1
+
+    while (page <= totalPages) {
+      const { data } = await apiClient.get(`/compra/?page=${page}`)
+
+      all = all.concat(data.results)
+      totalPages = data.total_pages
+      page++
+    }
+
+    return all
   },
 
-  getById(id) {
-    return apiClient.get(`/compra/${id}/`);
+  async getBag() {
+    const compras = await this.getAll()
+
+    return compras.find(
+        compra => compra.status === 'Carrinho'
+    ) || null
+},
+
+  async getById(id) {
+    const { data } = await apiClient.get(`/compra/${id}/`)
+    return data
   },
 
-  create(data) {
-    return apiClient.post('/compra/', data);
+  async create(data) {
+    const { data: compra } = await apiClient.post('/compra/', data)
+    return compra
   },
 
-  update(id, data) {
-    return apiClient.patch(`/compra/${id}/`, data);
+  async update(id, data) {
+    const { data: compra } = await apiClient.patch(`/compra/${id}/`, data)
+    return compra
   },
+  async finalizar(id) {
+    const { data } = await apiClient.post(`/compra/${id}/finalizar/`)
+    return data
+  }
+}
 
-  remove(id) {
-    return apiClient.delete(`/compra/${id}/`);
-  },
-};
-
-export default comprasApi;
+export default comprasApi

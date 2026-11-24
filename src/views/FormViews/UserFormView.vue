@@ -12,9 +12,7 @@ const router = useRouter()
 const store = useInputStore()
 
 const fotoPreview = ref(null)
-const fotoAttachmentKey = ref(null)
 const uploadingFoto = ref(false)
-const erroFoto = ref('')
 const fotoFile = ref(null)
 
 function handleFotoChange(event) {
@@ -68,23 +66,14 @@ async function handleRegister() {
       nascimento: store.campos.userInputDataNascimento.value,
       password: store.campos.userInputSenha.value,
     }
-
-    // 1. Primeiro cria o usuário e faz login
     await authStore.register(userData)
 
-    // 2. Agora já existe token
-    // então podemos enviar a foto
     if (fotoFile.value) {
       uploadingFoto.value = true
-
       const response = await authApi.uploadImage(fotoFile.value)
-
       const fotoAttachmentKey = response.data.attachment_key
-
-      // 3. Busca o usuário recém-criado
       const { data: usuario } = await authApi.getMe()
 
-      // 4. Vincula a foto ao usuário
       await authApi.updateProfile(usuario.id, {
         foto_attachment_key: fotoAttachmentKey
       })
@@ -147,7 +136,7 @@ async function handleRegister() {
         <RouterLink to="/login">
           <Button label="Ir para página de Login"> </Button>
         </RouterLink>
-        <Input v-for="(campo, key) in store.campos" :key="key" :campo="campo" @update="(value) => campo.value = value" />
+        <Input v-for="(campo, key) in store.campos" :key="key" :campo="campo" @update="(value) => { campo.value = value; campo.error = '' }" />
         <div class="mt-6">
           <label class="block text-sm mb-2"> Foto de perfil </label>
           <div v-if="fotoPreview" class="mb-3 flex items-center gap-3">

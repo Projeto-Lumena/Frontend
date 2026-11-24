@@ -1,6 +1,6 @@
 <script setup>
 import { computed, ref } from 'vue'
-import { useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 
 import Input from '@/components/FormComponents/InputComponent.vue'
 import Button from '@/components/FormComponents/ButtonComponent.vue'
@@ -9,6 +9,7 @@ import { useInputStore } from '@/stores/userInputStore'
 import { useAuthStore } from '@/stores/auth';
 
 const router = useRouter();
+const route = useRoute();
 
 const store = useInputStore()
 const authStore = useAuthStore();
@@ -28,8 +29,6 @@ const loginFields = computed(() => {
 async function handleLogin() {
   loading.value = true;
   errorMessage.value = '';
-
-  // Evita vários timers ao clicar várias vezes
   if (errorTimeout) {
     clearTimeout(errorTimeout);
   }
@@ -39,6 +38,13 @@ async function handleLogin() {
     const password = store.campos.userInputSenha.value;
 
     await authStore.login(email, password);
+
+    const redirect = route.query.redirect;
+
+    if (typeof redirect === 'string' && redirect.startsWith('/')) {
+      router.push(redirect);
+      return;
+    }
 
     router.push({
       path: '/',
@@ -67,7 +73,7 @@ async function handleLogin() {
         <h1 class="text-3xl text-center text-[#0C2645] font-[Cinzel] md:text-4xl lg:text-5xl">
           Login
         </h1>
-        <Input v-for="(campo, key) in loginFields" :key="key" :campo="campo" @update="(value) => campo.value = value" />
+        <Input v-for="(campo, key) in loginFields" :key="key" :campo="campo" @update="(value) => { campo.value = value; campo.error = '' }" />
         <div v-if="errorMessage"
           class="mb-4 mt-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">
           {{ errorMessage }}

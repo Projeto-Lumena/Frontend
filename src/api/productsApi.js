@@ -1,8 +1,25 @@
 import apiClient from './config.js';
 
 const productsApi = {
-  getAll() {
-    return apiClient.get('/produto/');
+  async getAll(params = {}) {
+    let page = 1
+    let all = []
+    let totalPages = 1
+
+    while (page <= totalPages) {
+      const res = await apiClient.get('/produto/', {
+        params: {
+          ...params,
+          page
+        }
+      })
+
+      all = all.concat(res.data.results)
+      totalPages = res.data.total_pages
+      page++
+    }
+
+    return all
   },
 
   getById(id) {
