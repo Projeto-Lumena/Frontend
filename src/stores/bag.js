@@ -1,87 +1,111 @@
 import { ref, computed, watch } from 'vue'
 import { defineStore } from 'pinia'
 import { useAuthStore } from '@/stores/auth'
-
-const GUEST_BAG_KEY = 'lumena-bag-guest'
-
-function readBag(key) {
-  try {
-    const parsed = JSON.parse(localStorage.getItem(key) || '[]')
-
-    return Array.isArray(parsed) ? parsed : []
-  } catch {
-    return []
-  }
-}
-
-function writeBag(key, bagItems) {
-  localStorage.setItem(key, JSON.stringify(bagItems))
-}
-
-function mergeItems(baseItems, extraItems) {
-  const merged = baseItems.map((item) => ({ ...item }))
-
-  extraItems.forEach((extraItem) => {
-    const quantidade = Number(extraItem.quantidade) || 1
-    const existing = merged.find((item) => item.id === extraItem.id)
-
-    if (existing) {
-      existing.quantidade += quantidade
-    } else {
-      merged.push({ ...extraItem, quantidade })
-    }
-  })
-
-  return merged
-}
+import { useProductsStore } from '@/stores/products'
+import comprasApi from '@/api/comprasApi'
 
 export const useBagStore = defineStore('bag', () => {
   const authStore = useAuthStore()
+  const productsStore = useProductsStore()
 
   const items = ref([])
+  const compraId = ref(null)
+  const loading = ref(false)
 
-  function getUserBagKey() {
-    return authStore.userEmail ? `lumena-bag-${authStore.userEmail}` : null
+  function normalizeItem(item) {
+    const produtoId = item.produto_id ?? item.produto?.id
+    const variacaoId = item.variacao_id ?? item.variacao?.id
+
+    const produto = productsStore.products.find(
+      p => String(p.id) === String(produtoId)
+    )
+
+    return {
+      id: variacaoId,
+      produtoId,
+      nome: item.produto?.nome ?? item.produto,
+      tamanho: item.variacao?.tamanho ?? item.variacao,
+      preco: Number(item.preco ?? item.variacao?.preco ?? 0),
+      imagem: item.imagem?.url ?? produto?.imagem?.url ?? null,
+      quantidade: Number(item.quantidade)
+    }
   }
 
-  function getBagKey() {
-    return getUserBagKey() || GUEST_BAG_KEY
+  async function ensureProductsLoaded() {
+    if (!productsStore.products.length) {
+      await productsStore.fetchProducts()
+    }
   }
 
-  /**
-   * Carrega a sacola do usuário logado. Se ele adicionou itens antes de
-   * entrar (sacola de visitante), esses itens são mesclados na sacola dele.
-   */
-  function loadBag() {
-    const userKey = getUserBagKey()
+  async function normalizeCompra(compra) {
+    await ensureProductsLoaded()
 
-    if (!userKey) {
-      items.value = readBag(GUEST_BAG_KEY)
+    compraId.value = compra?.id ?? null
+    items.value = compra?.itens?.map(normalizeItem) ?? []
+  }
+
+  function getPayload(lista = items.value) {
+    return {
+      itens: lista.map(item => ({
+        produto: Number(item.produtoId),
+        variacao: Number(item.id),
+        quantidade: Number(item.quantidade)
+      }))
+    }
+  }
+
+  async function loadBag() {
+    if (!authStore.isAuthenticated) {
+      items.value = []
+      compraId.value = null
       return
     }
 
-    const guestItems = readBag(GUEST_BAG_KEY)
-    const userItems = readBag(userKey)
+    loading.value = true
 
-    if (guestItems.length) {
-      items.value = mergeItems(userItems, guestItems)
-      writeBag(userKey, items.value)
-      localStorage.removeItem(GUEST_BAG_KEY)
+    try {
+      const compra = await comprasApi.getBag()
+      await normalizeCompra(compra)
+    } catch (error) {
+      console.error('Erro ao carregar a sacola:', error)
+      throw error
+    } finally {
+      loading.value = false
+    }
+  }
+
+  async function saveBag() {
+    if (!authStore.isAuthenticated) {
+      throw new Error('É necessário entrar na conta para utilizar a sacola.')
+    }
+
+    const payload = getPayload()
+
+    if (compraId.value) {
+      await comprasApi.update(compraId.value, payload)
+    } else {
+      await comprasApi.create(payload)
+
+      const compra = await comprasApi.getBag()
+      await normalizeCompra(compra)
       return
     }
 
-    items.value = userItems
+    const compra = await comprasApi.getById(compraId.value)
+    await normalizeCompra(compra)
   }
 
-  function saveBag() {
-    writeBag(getBagKey(), items.value)
-  }
+  async function addToBag(product, quantidade = 1) {
+    if (!authStore.isAuthenticated) {
+      throw new Error('Faça login para adicionar produtos à sacola.')
+    }
 
-  function addToBag(product, quantidade = 1) {
     const quantidadeValida =
       Number(quantidade) > 0 ? Number(quantidade) : 1
 
-    const existingItem = items.value.find((item) => item.id === product.id)
+    const existingItem = items.value.find(
+      item => item.id === product.id
+    )
 
     if (existingItem) {
       existingItem.quantidade += quantidadeValida
@@ -92,74 +116,69 @@ export const useBagStore = defineStore('bag', () => {
       })
     }
 
-    saveBag()
+    await saveBag()
   }
 
-  function increaseQuantity(id) {
-    const item = items.value.find((item) => item.id === id)
+  async function increaseQuantity(id) {
+    const item = items.value.find(item => item.id === id)
+    if (!item) return
 
-    if (item) {
-      item.quantidade++
-      saveBag()
-    }
+    item.quantidade++
+    await saveBag()
   }
 
-  function decreaseQuantity(id) {
-    const item = items.value.find((item) => item.id === id)
-
+  async function decreaseQuantity(id) {
+    const item = items.value.find(item => item.id === id)
     if (!item) return
 
     if (item.quantidade > 1) {
       item.quantidade--
     } else {
-      removeFromBag(id)
-      return
+      items.value = items.value.filter(item => item.id !== id)
     }
 
-    saveBag()
+    await saveBag()
   }
 
-  function removeFromBag(id) {
-    items.value = items.value.filter((item) => item.id !== id)
-
-    saveBag()
+  async function removeFromBag(id) {
+    items.value = items.value.filter(item => item.id !== id)
+    await saveBag()
   }
 
-  function clearBag() {
+  async function clearBag() {
     items.value = []
-    saveBag()
+    await saveBag()
   }
 
-  const subtotal = computed(() => {
-    return items.value.reduce(
+  const subtotal = computed(() =>
+    items.value.reduce(
       (total, item) => total + item.preco * item.quantidade,
       0
     )
-  })
+  )
 
   const descontos = computed(() => 0)
 
-  const total = computed(() => {
-    return subtotal.value - descontos.value
-  })
+  const total = computed(() => subtotal.value - descontos.value)
 
-  const totalItems = computed(() => {
-    return items.value.reduce(
-      (total, item) => total + item.quantidade,
-      0
-    )
-  })
+  const totalItems = computed(() =>
+    items.value.reduce((total, item) => total + item.quantidade, 0)
+  )
 
   watch(
     () => authStore.userEmail,
     () => {
-      loadBag()
+      loadBag().catch(error => {
+        console.error(error)
+      })
     },
     { immediate: true }
   )
 
   return {
     items,
+    compraId,
+    loading,
     subtotal,
     descontos,
     total,

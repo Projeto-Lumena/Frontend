@@ -82,10 +82,7 @@ function acessarSacola() {
                 </RouterLink>
             </li>
             <li class="h-full w-30">
-                <button type="button" @click="acessarSacola" class="h-full w-full flex flex-col items-center justify-center text-white">
-                    <img class="w-5 h-5" src="/icons/sacola.svg" alt="Sacola">
-                    <span class="text-sm font-sen"> Sacola  </span>
-                </button>
+                <SearchComponent />
             </li>
             <li class="h-full w-30">
                 <RouterLink to="/" class="h-full w-full flex flex-col items-center justify-center text-white"  active-class="text-[#FDA202]">
@@ -94,7 +91,10 @@ function acessarSacola() {
                 </RouterLink>
             </li>
             <li class="h-full w-30">
-                <SearchComponent />
+                <button type="button" @click="acessarSacola" class="h-full w-full flex flex-col items-center justify-center text-white">
+                    <img class="w-5 h-5" src="/icons/sacola.svg" alt="Sacola">
+                    <span class="text-sm font-sen"> Sacola  </span>           
+                </button>
             </li>
             <li class="h-full w-30">
                 <RouterLink :to="authStore.isAuthenticated ? '/perfil' : '/login'" class="h-full w-full flex flex-col items-center justify-center text-white" active-class="text-[#FDA202]">

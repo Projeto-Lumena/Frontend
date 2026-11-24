@@ -3,12 +3,14 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useBagStore } from '@/stores/bag'
+import { useProductsStore } from '@/stores/products'
 import comprasApi from '@/api/comprasApi'
 
 const route = useRoute()
 const router = useRouter()
 const authStore = useAuthStore()
 const bagStore = useBagStore()
+const productsStore = useProductsStore()
 
 const pedido = ref(null)
 const loading = ref(true)
@@ -17,6 +19,14 @@ const mostrarConfirmacao = ref(false)
 const mostrarSucesso = ref(false)
 
 const WHATSAPP_VENDEDORA = '554796973888'
+
+function getImagemProduto(produtoId) {
+    const produto = productsStore.products.find(
+        p => String(p.id) === String(produtoId)
+    )
+
+    return produto?.imagem?.url || ''
+}
 
 const statuspassos = [
     {
@@ -64,14 +74,27 @@ function totalPedido() {
 }
 
 async function carregarPedido() {
+    if (productsStore.products.length === 0) {
+        await productsStore.fetchProducts()
+    }
     try {
         error.value = ''
         loading.value = true
 
         const id = route.params.id
-        const response = await comprasApi.getById(id)
-        const pedidoApi = response.data
 
+        if (!id) {
+            throw new Error('ID do pedido não informado.')
+        }
+
+        // Busca o pedido diretamente no backend
+        const pedidoApi = await comprasApi.getById(id)
+
+        if (!pedidoApi) {
+            throw new Error('Pedido não encontrado.')
+        }
+
+        // Recupera os dados adicionais que ainda estão no localStorage
         let dadosLocais = {}
 
         const pedidoSalvo = localStorage.getItem(`lumena-pedido-${id}`)
@@ -84,13 +107,18 @@ async function carregarPedido() {
             }
         }
 
-        const subtotal = pedidoApi.itens?.reduce((total, item) => {
-            return total + Number(item.total || 0)
-        }, 0) || 0
+        const subtotal = (pedidoApi.itens || []).reduce(
+            (total, item) => total + Number(item.total || 0),
+            0
+        )
+
+        const statusBackend = pedidoApi.status === 'Finalizado'
+            ? 'Pedido Realizado'
+            : pedidoApi.status
 
         pedido.value = {
             ...pedidoApi,
-            status: dadosLocais.status || (pedidoApi.status === 'Finalizado' ? 'Pedido Realizado' : pedidoApi.status),
+            status: statusBackend || dadosLocais.status || '',
             data: dadosLocais.data || '',
             subtotal: dadosLocais.subtotal ?? subtotal,
             frete: dadosLocais.frete ?? 0,
@@ -99,21 +127,10 @@ async function carregarPedido() {
             endereco: dadosLocais.endereco || '',
             distancia: dadosLocais.distancia ?? null
         }
+
     } catch (err) {
         console.error('Erro ao carregar pedido:', err)
-
-        const id = route.params.id
-        const pedidoSalvo = localStorage.getItem(`lumena-pedido-${id}`)
-
-        if (pedidoSalvo) {
-            try {
-                pedido.value = JSON.parse(pedidoSalvo)
-            } catch {
-                error.value = 'Não foi possível carregar o pedido.'
-            }
-        } else {
-            error.value = 'Pedido não encontrado.'
-        }
+        error.value = 'Não foi possível carregar o pedido. Verifique se ele existe e tente novamente.'
     } finally {
         loading.value = false
     }
@@ -241,7 +258,8 @@ onMounted(carregarPedido)
     <main v-else-if="error" class="min-h-screen bg-white px-5 pb-20 pt-28 md:px-10 md:pt-[175px]">
         <div class="mx-auto max-w-[700px] py-20 text-center">
             <p class="mb-6 text-[#2C2828]">{{ error }}</p>
-            <button type="button" @click="carregarPedido" class="border border-[#0C2645] px-8 py-3 text-[#0C2645]">Tentar novamente</button>
+            <button type="button" @click="carregarPedido"
+                class="border border-[#0C2645] px-8 py-3 text-[#0C2645]">Tentar novamente</button>
         </div>
     </main>
     <main v-else-if="pedido" class="min-h-screen bg-white px-5 pb-20 pt-28 md:px-10 md:pt-[175px]">
@@ -252,9 +270,10 @@ onMounted(carregarPedido)
                         <h1 class="text-center font-[Cinzel] text-3xl text-[#0C2645] md:text-4xl">PEDIDO</h1>
                         <span class="text-2xl text-[#2C2828]">N° {{ String(pedido.id).padStart(8, '0') }}</span>
                     </div>
-                    <div v-for="item in pedido.itens" :key="`${item.produto.id}-${item.variacao.id}`" class="mb-3 flex min-h-[185px] border border-[#BFC0C0] p-3">
+                    <div v-for="item in pedido.itens" :key="`${item.produto.id}-${item.variacao.id}`"
+                        class="mb-3 flex min-h-[185px] border border-[#BFC0C0] p-3">
                         <div class="h-[160px] w-[160px] shrink-0 overflow-hidden border border-[#E1E1E1]">
-                            <img :src="item.produto.imagem?.url || item.produto.imagem" :alt="`Vela Aromática - ${item.produto.nome}`" class="h-full w-full object-cover">
+                            <img :src="getImagemProduto(item.produto.id)" :alt="item.produto.nome" class="...">
                         </div>
                         <div class="ml-4 flex flex-1 flex-col justify-between py-1">
                             <div>
@@ -282,34 +301,56 @@ onMounted(carregarPedido)
                         </div>
                     </div>
                     <div v-if="!pedidoCancelado" class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <button type="button" @click="combinarEntrega" class="h-[48px] border border-[#0C2645] px-6 text-[#0C2645] transition hover:bg-gray-100">Combinar entrega</button>
-                        <button type="button" @click="efetuarPagamento" class="h-[48px] bg-[#0C2645] px-6 text-white transition hover:bg-[#163657]">Efetuar pagamento</button>
+                        <button type="button" @click="combinarEntrega"
+                            class="h-[48px] border border-[#0C2645] px-6 text-[#0C2645] transition hover:bg-gray-100">Combinar
+                            entrega</button>
+                        <button type="button" @click="efetuarPagamento"
+                            class="h-[48px] bg-[#0C2645] px-6 text-white transition hover:bg-[#163657]">Efetuar
+                            pagamento</button>
                     </div>
                 </section>
                 <section>
-                    <h2 class="mb-9 border-b border-[#0C2645] pb-5 font-[Cinzel] text-4xl text-[#0C2645]">STATUS DO PEDIDO</h2>
+                    <h2 class="mb-9 border-b border-[#0C2645] pb-5 font-[Cinzel] text-4xl text-[#0C2645]">STATUS DO
+                        PEDIDO</h2>
                     <div class="relative ml-1">
                         <div class="absolute bottom-[45px] left-[32px] top-[45px] w-[2px] bg-[#BFC0C0]"></div>
-                        <div v-for="(passo, index) in statuspassos" :key="passo.value" class="relative flex min-h-[135px]">
-                            <div class="relative z-10 flex h-[65px] w-[65px] shrink-0 items-center justify-center rounded-full border bg-white" :class="isCompleted(index) ? 'border-[#0C2645]' : 'border-[#BFC0C0]'">
-                                <div class="h-[35px] w-[35px]" :class="isCompleted(index) ? 'bg-[#0C2645]' : 'bg-[#BFC0C0]'" :style="{ mask: `url(${passo.icon}) center / contain no-repeat`, '-webkit-mask': `url(${passo.icon}) center / contain no-repeat` }"></div>
+                        <div v-for="(passo, index) in statuspassos" :key="passo.value"
+                            class="relative flex min-h-[135px]">
+                            <div class="relative z-10 flex h-[65px] w-[65px] shrink-0 items-center justify-center rounded-full border bg-white"
+                                :class="isCompleted(index) ? 'border-[#0C2645]' : 'border-[#BFC0C0]'">
+                                <div class="h-[35px] w-[35px]"
+                                    :class="isCompleted(index) ? 'bg-[#0C2645]' : 'bg-[#BFC0C0]'"
+                                    :style="{ mask: `url(${passo.icon}) center / contain no-repeat`, '-webkit-mask': `url(${passo.icon}) center / contain no-repeat` }">
+                                </div>
                             </div>
                             <div class="ml-5 flex flex-1 flex-col justify-center">
-                                <h3 class="text-xl" :class="isCompleted(index) ? 'text-[#2C2828]' : 'text-[#B0B0B0]'">{{ passo.title }}</h3>
-                                <p class="mt-1 text-sm" :class="isCompleted(index) ? 'text-[#2C2828]' : 'text-[#B0B0B0]'">{{ passo.description }}</p>
+                                <h3 class="text-xl" :class="isCompleted(index) ? 'text-[#2C2828]' : 'text-[#B0B0B0]'">{{
+                                    passo.title }}</h3>
+                                <p class="mt-1 text-sm"
+                                    :class="isCompleted(index) ? 'text-[#2C2828]' : 'text-[#B0B0B0]'">{{
+                                        passo.description }}</p>
                             </div>
-                            <span class="shrink-0 pt-1 text-sm" :class="isCompleted(index) ? 'text-[#2C2828]' : 'text-[#B0B0B0]'">{{ isCompleted(index) ? pedido.data : 'DD/MM/AAAA' }}</span>
+                            <span class="shrink-0 pt-1 text-sm"
+                                :class="isCompleted(index) ? 'text-[#2C2828]' : 'text-[#B0B0B0]'">{{ isCompleted(index)
+                                    ? pedido.data : 'DD/MM/AAAA' }}</span>
                         </div>
                     </div>
-                    <div v-if="pedidoCancelado" class="mt-2 border border-[#BFC0C0] px-5 py-4 text-center text-[#2C2828]">
+                    <div v-if="pedidoCancelado"
+                        class="mt-2 border border-[#BFC0C0] px-5 py-4 text-center text-[#2C2828]">
                         <p class="text-lg">Pedido cancelado</p>
                         <p class="mt-1 text-sm">Este pedido não poderá mais ser alterado.</p>
                     </div>
                     <div class="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                        <button v-if="!pedidoCancelado" type="button" @click="abrirConfirmacao" class="h-[48px] border border-[#0C2645] px-6 text-[#0C2645] transition hover:bg-gray-100">Cancelar pedido</button>
-                        <button type="button" @click="comprarNovamente" class="h-[48px] bg-[#0C2645] px-6 text-white transition hover:bg-[#163657]">Comprar novamente</button>
+                        <button v-if="!pedidoCancelado" type="button" @click="abrirConfirmacao"
+                            class="h-[48px] border border-[#0C2645] px-6 text-[#0C2645] transition hover:bg-gray-100">Cancelar
+                            pedido</button>
+                        <button type="button" @click="comprarNovamente"
+                            class="h-[48px] bg-[#0C2645] px-6 text-white transition hover:bg-[#163657]">Comprar
+                            novamente</button>
                     </div>
-                    <button type="button" @click="voltarInicio" class="mt-5 w-full text-center text-sm text-[#0C2645] underline transition hover:text-[#163657]">Voltar ao início</button>
+                    <button type="button" @click="voltarInicio"
+                        class="mt-5 w-full text-center text-sm text-[#0C2645] underline transition hover:text-[#163657]">Voltar
+                        ao início</button>
                 </section>
             </div>
         </section>
@@ -317,16 +358,23 @@ onMounted(carregarPedido)
     <div v-if="mostrarConfirmacao" class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 px-5">
         <div class="w-full max-w-[450px] border border-[#BFC0C0] bg-white p-8 text-center shadow-lg">
             <h2 class="font-[Cinzel] text-2xl text-[#0C2645]">Cancelar pedido?</h2>
-            <p class="mt-5 text-base leading-6 text-[#2C2828]">Tem certeza de que deseja cancelar este pedido? Essa ação não poderá ser desfeita.</p>
+            <p class="mt-5 text-base leading-6 text-[#2C2828]">Tem certeza de que deseja cancelar este pedido? Essa ação
+                não poderá ser desfeita.</p>
             <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
-                <button type="button" @click="fecharConfirmacao" class="h-[48px] border border-[#0C2645] px-5 text-[#0C2645] transition hover:bg-gray-100">Não, voltar</button>
-                <button type="button" @click="cancelarPedido" class="h-[48px] bg-[#0C2645] px-5 text-white transition hover:bg-[#163657]">Sim, cancelar pedido</button>
+                <button type="button" @click="fecharConfirmacao"
+                    class="h-[48px] border border-[#0C2645] px-5 text-[#0C2645] transition hover:bg-gray-100">Não,
+                    voltar</button>
+                <button type="button" @click="cancelarPedido"
+                    class="h-[48px] bg-[#0C2645] px-5 text-white transition hover:bg-[#163657]">Sim, cancelar
+                    pedido</button>
             </div>
         </div>
     </div>
     <div v-if="mostrarSucesso" class="fixed inset-0 z-[110] flex items-center justify-center bg-black/50 px-5">
         <div class="w-full max-w-[400px] border border-[#BFC0C0] bg-white p-8 text-center shadow-lg">
-            <div class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#0C2645] text-2xl text-[#0C2645]">✓</div>
+            <div
+                class="mx-auto flex h-14 w-14 items-center justify-center rounded-full border-2 border-[#0C2645] text-2xl text-[#0C2645]">
+                ✓</div>
             <h2 class="mt-5 font-[Cinzel] text-2xl text-[#0C2645]">Pedido cancelado</h2>
             <p class="mt-3 text-[#2C2828]">O pedido foi cancelado com sucesso.</p>
         </div>
