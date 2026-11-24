@@ -1,21 +1,8 @@
-
 <template>
-  <button
-    class="install-button"
-    @click="$emit('install')"
-  >
+  <button class="install-button" @click="$emit('install')">
     <span class="install-icon">
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        width="21"
-        height="21"
-        viewBox="0 0 24 24"
-        fill="none"
-        stroke="currentColor"
-        stroke-width="1.6"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-      >
+      <svg xmlns="http://www.w3.org/2000/svg" width="21" height="21" viewBox="0 0 24 24" fill="none"
+        stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
         <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
         <path d="m7 10 5 5 5-5" />
         <path d="M12 15V3" />
@@ -120,6 +107,7 @@ defineEmits(['install']);
 }
 
 @media (prefers-reduced-motion: reduce) {
+
   .install-button,
   .install-arrow {
     transition: none;

@@ -1,9 +1,5 @@
-
 <template>
-  <InstallButtonContent
-    v-if="showInstallButton"
-    @install="installApp"
-  />
+  <InstallButtonContent v-if="showInstallButton" @install="installApp" />
 </template>
 
 <script setup>
