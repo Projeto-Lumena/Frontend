@@ -205,10 +205,12 @@ function abrirWhatsApp() {
         location.value?.label ||
         enderecoManual.value ||
         'não informado'
+
     const pagamento =
         metodoPagamento.value ||
         'a combinar'
-  const mensagem = `Olá! Gostaria de combinar meu pedido na Lumena.
+
+    const mensagem = `Olá! Gostaria de combinar meu pedido na Lumena.
 
 Forma de pagamento: ${pagamento}
 Entrega: ${entrega}
@@ -229,7 +231,15 @@ function voltar() {
 async function fazerPedido() {
     if (!podeFazerPedido.value) return
 
+    if (!bagStore.compraId) {
+        alert(
+            'Não foi possível identificar sua sacola. Atualize a página e tente novamente.'
+        )
+        return
+    }
+
     fazendoPedido.value = true
+
     const resumoDoPedido = {
         metodoPagamento: metodoPagamento.value,
         tipoEntrega: tipoEntrega.value,
@@ -249,19 +259,22 @@ async function fazerPedido() {
     }
 
     try {
-        const response = await comprasApi.create({
-            itens: bagStore.items.map(item => ({
-                produto: item.produtoId,
-                variacao: item.id,
-                quantidade: item.quantidade
-            }))
-        })
+        // Finaliza a compra que já existe no backend
+        const compraSalva = await comprasApi.finalizar(
+            bagStore.compraId
+        )
 
-        const compraSalva = response.data
+        // Salva as informações complementares localmente
         salvarPedidoLocal(compraSalva.id, resumoDoPedido)
-        await userStore.carregarPedidos()
-        bagStore.clearBag()
 
+        // Atualiza os pedidos exibidos no perfil
+        await userStore.carregarPedidos()
+
+        // Limpa somente o estado local da sacola
+        bagStore.items = []
+        bagStore.compraId = null
+
+        // Direciona para os detalhes do pedido
         router.push({
             name: 'pedido',
             params: {
@@ -279,11 +292,12 @@ async function fazerPedido() {
             )
 
             alert(
+                error.response.data?.detail ||
                 'Não foi possível finalizar o pedido. Verifique os dados e tente novamente.'
             )
         } else {
             alert(
-                'Não foi possível conectar ao servidor.'
+                'Não foi possível conectar ao servidor. Verifique se o backend está em execução.'
             )
         }
 
@@ -308,73 +322,92 @@ onMounted(async () => {
     <main class="min-h-screen bg-white px-5 pb-20 pt-18 md:px-10 md:pt-[175px]">
         <section class="mx-auto max-w-[1250px]">
             <div class="mb-10 border-b border-[#0C2645] pb-5">
-                <h1 class="text-center font-[Cinzel] text-3xl text-[#0C2645] md:text-4xl lg:text-4xl"> FAZER PEDIDO  </h1>
+                <h1 class="text-center font-[Cinzel] text-3xl text-[#0C2645] md:text-4xl lg:text-4xl"> FAZER PEDIDO
+                </h1>
             </div>
             <div class="grid grid-cols-1 gap-14 lg:grid-cols-[1fr_400px] lg:gap-[100px]">
                 <section>
                     <div class="mb-10">
                         <h2 class="mb-6 font-[Cinzel] text-2xl text-[#0C2645]"> PRODUTOS </h2>
-                        <div v-for="item in bagStore.items" :key="item.id" class="mb-3 flex min-h-[150px] border border-[#BFC0C0] p-3">
+                        <div v-for="item in bagStore.items" :key="item.id"
+                            class="mb-3 flex min-h-[150px] border border-[#BFC0C0] p-3">
                             <div class="h-[125px] w-[125px] shrink-0 overflow-hidden border border-[#E1E1E1]">
                                 <img :src="item.imagem" :alt="item.nome" class="h-full w-full object-cover">
                             </div>
                             <div class="ml-5 flex flex-1 flex-col justify-between py-1">
                                 <div>
-                                    <p class="text-base text-[#2C2828]">     Vela Aromática - </p>
-                                    <p class="text-base text-[#2C2828]">  {{ item.nome }}  </p>
-                                    <p class="mt-2 text-sm text-[#2C2828]"> Tamanho: {{ item.tamanho }}  </p>
-                                    <p class="text-sm text-[#2C2828]">  Quantidade: {{ item.quantidade }}  </p>
+                                    <p class="text-base text-[#2C2828]"> Vela Aromática - </p>
+                                    <p class="text-base text-[#2C2828]"> {{ item.nome }} </p>
+                                    <p class="mt-2 text-sm text-[#2C2828]"> Tamanho: {{ item.tamanho }} </p>
+                                    <p class="text-sm text-[#2C2828]"> Quantidade: {{ item.quantidade }} </p>
                                 </div>
-                                <p class="text-lg text-[#2C2828]">  R${{ formatPrice(item.preco * item.quantidade) }} </p>
+                                <p class="text-lg text-[#2C2828]"> R${{ formatPrice(item.preco * item.quantidade) }}
+                                </p>
                             </div>
                         </div>
                     </div>
                     <div class="mb-10">
-                        <h2 class="mb-6 font-[Cinzel] text-2xl text-[#0C2645]">  FORMA DE PAGAMENTO </h2>
+                        <h2 class="mb-6 font-[Cinzel] text-2xl text-[#0C2645]"> FORMA DE PAGAMENTO </h2>
                         <div class="flex flex-col">
-                            <label class="flex h-[55px] cursor-pointer items-center border border-[#BFC0C0] px-5 transition hover:border-[#0C2645]" :class="metodoPagamento === 'Pix' ? 'border-[#0C2645] bg-gray-50' : ''">
+                            <label
+                                class="flex h-[55px] cursor-pointer items-center border border-[#BFC0C0] px-5 transition hover:border-[#0C2645]"
+                                :class="metodoPagamento === 'Pix' ? 'border-[#0C2645] bg-gray-50' : ''">
                                 <input v-model="metodoPagamento" type="radio" value="Pix" class="sr-only">
                                 <img src="/icons/pix.svg" alt="Pix" class="mr-4 h-7 w-7 object-contain">
-                                <span class="text-[#2C2828]">  Pix </span>
+                                <span class="text-[#2C2828]"> Pix </span>
                             </label>
-                            <label class="-mt-px flex h-[55px] cursor-pointer items-center border border-[#BFC0C0] px-5 transition hover:border-[#0C2645]" :class="metodoPagamento === 'Dinheiro' ? 'border-[#0C2645] bg-gray-50' : ''">
+                            <label
+                                class="-mt-px flex h-[55px] cursor-pointer items-center border border-[#BFC0C0] px-5 transition hover:border-[#0C2645]"
+                                :class="metodoPagamento === 'Dinheiro' ? 'border-[#0C2645] bg-gray-50' : ''">
                                 <input v-model="metodoPagamento" type="radio" value="Dinheiro" class="sr-only">
                                 <img src="/icons/dinheiro.svg" alt="Dinheiro" class="mr-4 h-7 w-7 object-contain">
-                                <span class="text-[#2C2828]">  Dinheiro (combinar com a vendedora)  </span>
+                                <span class="text-[#2C2828]"> Dinheiro (combinar com a vendedora) </span>
                             </label>
                         </div>
                     </div>
                     <div class="mb-10">
-                        <h2 class="mb-6 font-[Cinzel] text-2xl text-[#0C2645]">  ENTREGA </h2>
+                        <h2 class="mb-6 font-[Cinzel] text-2xl text-[#0C2645]"> ENTREGA </h2>
                         <div class="mb-5 flex flex-col border border-[#BFC0C0]">
-                            <button type="button" @click="selecionarEntrega('Vou buscar')" class="flex min-h-[58px] items-center justify-between border-b border-[#BFC0C0] px-5 text-left transition" :class="tipoEntrega === 'Vou buscar' ? 'bg-gray-50 text-[#0C2645]' : 'text-[#2C2828]'">
+                            <button type="button" @click="selecionarEntrega('Vou buscar')"
+                                class="flex min-h-[58px] items-center justify-between border-b border-[#BFC0C0] px-5 text-left transition"
+                                :class="tipoEntrega === 'Vou buscar' ? 'bg-gray-50 text-[#0C2645]' : 'text-[#2C2828]'">
                                 <span>Vou buscar o pedido</span>
                                 <span class="text-xl">›</span>
                             </button>
-                            <button type="button" @click="selecionarEntrega('Uber Entregas')" class="flex min-h-[58px] items-center justify-between px-5 text-left transition" :class="tipoEntrega === 'Uber Entregas' ? 'bg-gray-50 text-[#0C2645]' : 'text-[#2C2828]'">
+                            <button type="button" @click="selecionarEntrega('Uber Entregas')"
+                                class="flex min-h-[58px] items-center justify-between px-5 text-left transition"
+                                :class="tipoEntrega === 'Uber Entregas' ? 'bg-gray-50 text-[#0C2645]' : 'text-[#2C2828]'">
                                 <span>Uber Entregas</span>
                                 <span class="text-xl">›</span>
                             </button>
                         </div>
                         <div class="border border-[#BFC0C0] p-5">
                             <div class="mb-5">
-                                <p class="mb-3 text-sm text-[#777]">  Endereço para entrega </p>
+                                <p class="mb-3 text-sm text-[#777]"> Endereço para entrega </p>
                                 <div class="flex gap-2">
-                                    <input v-model="enderecoManual" type="text" placeholder="Digite seu endereço" class="min-w-0 flex-1 border border-[#BFC0C0] px-4 py-3 text-sm text-[#2C2828] outline-none focus:border-[#0C2645]" @keyup.enter="buscarEnderecoManual">
-                                    <button type="button" @click="buscarEnderecoManual" :disabled="buscandoEndereco || !enderecoManual.trim()" class="border border-[#0C2645] px-4 text-sm text-[#0C2645] disabled:cursor-not-allowed disabled:opacity-50">
+                                    <input v-model="enderecoManual" type="text" placeholder="Digite seu endereço"
+                                        class="min-w-0 flex-1 border border-[#BFC0C0] px-4 py-3 text-sm text-[#2C2828] outline-none focus:border-[#0C2645]"
+                                        @keyup.enter="buscarEnderecoManual">
+                                    <button type="button" @click="buscarEnderecoManual"
+                                        :disabled="buscandoEndereco || !enderecoManual.trim()"
+                                        class="border border-[#0C2645] px-4 text-sm text-[#0C2645] disabled:cursor-not-allowed disabled:opacity-50">
                                         {{ buscandoEndereco ? 'Buscando...' : 'Buscar' }}
                                     </button>
                                 </div>
-                                <button type="button" @click="buscarLocalizacao" :disabled="loadingLocation" class="mt-3 text-sm text-[#0C2645] underline"> {{ loadingLocation ? 'Obtendo localização...' : 'Usar minha localização atual' }} </button>
+                                <button type="button" @click="buscarLocalizacao" :disabled="loadingLocation"
+                                    class="mt-3 text-sm text-[#0C2645] underline">
+                                    {{ loadingLocation ? 'Obtendo localização...' : 'Usar minha localização atual' }}
+                                </button>
                             </div>
                             <div class="mb-5">
-                                <p class="mb-1 text-sm text-[#777]">  Endereço selecionado  </p>
-                                <p v-if="location?.label" class="text-sm text-[#2C2828]">  {{ location.label }} </p>
+                                <p class="mb-1 text-sm text-[#777]"> Endereço selecionado </p>
+                                <p v-if="location?.label" class="text-sm text-[#2C2828]"> {{ location.label }} </p>
                                 <p v-else-if="locationError" class="text-sm text-red-600"> {{ locationError }} </p>
-                                <p v-else class="text-sm text-[#777]">  Nenhum endereço selecionado. </p>
+                                <p v-else class="text-sm text-[#777]"> Nenhum endereço selecionado. </p>
                             </div>
                             <LocationMap v-if="location" :location="location" />
-                            <div v-if="distanceKm !== null && tipoEntrega === 'Uber Entregas'" class="mt-5 border-t border-[#BFC0C0] pt-4">
+                            <div v-if="distanceKm !== null && tipoEntrega === 'Uber Entregas'"
+                                class="mt-5 border-t border-[#BFC0C0] pt-4">
                                 <div class="flex justify-between text-sm text-[#2C2828]">
                                     <span>Distância:</span>
                                     <span>{{ formatDistance(distanceKm) }} km</span>
@@ -385,8 +418,11 @@ onMounted(async () => {
                                 </div>
                             </div>
                             <div v-if="tipoEntrega" class="mt-5 border-t border-[#BFC0C0] pt-4">
-                                <p class="mb-3 text-sm text-[#2C2828]">  Combine os detalhes da entrega diretamente com a vendedora. </p>
-                                <button type="button" @click="abrirWhatsApp" class="flex w-full items-center justify-center gap-2 bg-[#0C2645] px-5 py-3 text-sm text-white transition hover:bg-[#163657]"> Combinar entrega pelo WhatsApp </button>
+                                <p class="mb-3 text-sm text-[#2C2828]"> Combine os detalhes da entrega diretamente com a
+                                    vendedora. </p>
+                                <button type="button" @click="abrirWhatsApp"
+                                    class="flex w-full items-center justify-center gap-2 bg-[#0C2645] px-5 py-3 text-sm text-white transition hover:bg-[#163657]">
+                                    Combinar entrega pelo WhatsApp </button>
                             </div>
                         </div>
                     </div>
@@ -394,7 +430,7 @@ onMounted(async () => {
                 <aside>
                     <div class="border border-[#BFC0C0]">
                         <div class="border-b border-[#BFC0C0] px-5 py-4">
-                            <h2 class="font-[Cinzel] text-2xl text-[#0C2645]">  RESUMO  </h2>
+                            <h2 class="font-[Cinzel] text-2xl text-[#0C2645]"> RESUMO </h2>
                         </div>
                         <div class="flex justify-between border-b border-[#BFC0C0] px-5 py-3 text-[#2C2828]">
                             <span>Subtotal:</span>
@@ -410,8 +446,12 @@ onMounted(async () => {
                         </div>
                     </div>
                     <div class="mt-8 flex gap-4">
-                        <button type="button" @click="voltar" class="h-[40px] flex-1 border border-[#0C2645] text-[#0C2645] transition hover:bg-gray-100"> Voltar</button>
-                        <button type="button" @click="fazerPedido" :disabled="fazendoPedido || !podeFazerPedido" class="h-[40px] flex-1 bg-[#0C2645] text-white transition hover:bg-[#163657] disabled:cursor-not-allowed disabled:opacity-50">  {{ fazendoPedido ? 'Enviando...' : 'Fazer Pedido' }} </button>
+                        <button type="button" @click="voltar"
+                            class="h-[40px] flex-1 border border-[#0C2645] text-[#0C2645] transition hover:bg-gray-100">
+                            Voltar</button>
+                        <button type="button" @click="fazerPedido" :disabled="fazendoPedido || !podeFazerPedido"
+                            class="h-[40px] flex-1 bg-[#0C2645] text-white transition hover:bg-[#163657] disabled:cursor-not-allowed disabled:opacity-50">
+                            {{ fazendoPedido ? 'Enviando...' : 'Fazer Pedido' }} </button>
                     </div>
                 </aside>
             </div>

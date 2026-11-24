@@ -1,13 +1,20 @@
 <script setup>
-import { computed, onMounted, ref } from 'vue'
-import { useRoute } from 'vue-router'
+
+import { computed, onMounted, ref, watch } from 'vue'
+import { useRoute, useRouter } from 'vue-router'
 import { useProductsStore } from '@/stores/products'
 import { useBagStore } from '@/stores/bag.js'
+import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
+const router = useRouter()
 const productsStore = useProductsStore()
 const bagStore = useBagStore()
+const authStore = useAuthStore()
+
 const addToBagMessage = ref(false)
+const addToBagError = ref('')
+const addingToBag = ref(false)
 
 onMounted(async () => {
     if (!productsStore.products?.length) {
@@ -16,61 +23,106 @@ onMounted(async () => {
 })
 
 const product = computed(() =>
-    productsStore.products.find((p) => String(p.id) === String(route.params.id))
+    productsStore.products.find(
+        p => String(p.id) === String(route.params.id)
+    )
 )
 
 const produtoVariacoes = computed(() => {
     if (!product.value) return []
-    const normalizarTamanho = (valor) => {
+
+    const normalizarTamanho = valor => {
         if (valor == null) return null
-        const s = String(valor).trim().toUpperCase()
-        if (s === 'P') return 'P'
-        if (s === 'M') return 'M'
-        if (s === 'G') return 'G'
-        return null
+
+        const tamanho = String(valor).trim().toUpperCase()
+
+        return ['P', 'M', 'G'].includes(tamanho) ? tamanho : null
     }
 
-    return productsStore.productVariations.filter((v) => String(v.produto) === String(product.value.id)).map((v) => {
-        const tamanho = normalizarTamanho(v.tamanho ?? v.nome ?? v.variacao ?? v.titulo)
-        return {
-            id: v.id ?? `${v.produto}-${v.tamanho}-${v.preco}`,
-            tamanho,
+    return productsStore.productVariations
+        .filter(v => String(v.produto) === String(product.value.id))
+        .map(v => ({
+            id: v.id,
+            tamanho: normalizarTamanho(
+                v.tamanho ?? v.nome ?? v.variacao ?? v.titulo
+            ),
             preco: Number(v.preco),
-            raw: v,
-        }
-    })
+            raw: v
+        }))
+        .filter(v => v.id != null && v.tamanho != null)
 })
 
 const selectedPreco = ref(null)
-onMounted(() => {
-    if (produtoVariacoes.value.length) {
-        selectedPreco.value = produtoVariacoes.value[0]
-    }
-})
+
+watch(
+    produtoVariacoes,
+    variacoes => {
+        if (!variacoes.length) {
+            selectedPreco.value = null
+            return
+        }
+
+        const atualAindaExiste = variacoes.some(
+            v => v.id === selectedPreco.value?.id
+        )
+
+        if (!atualAindaExiste) {
+            selectedPreco.value = variacoes[0]
+        }
+    },
+    { immediate: true }
+)
 
 const selecionadaPrecoFormatado = computed(() => {
-    const p = selectedPreco.value?.preco
-    if (!Number.isFinite(Number(p))) return null
-    return Number(p).toFixed(2).replace('.', ',')
+    const preco = selectedPreco.value?.preco
+
+    if (!Number.isFinite(Number(preco))) return null
+
+    return Number(preco).toFixed(2).replace('.', ',')
 })
 
-function adicionarASacola() {
-    if (!product.value || !selectedPreco.value) return
+async function adicionarASacola() {
+    if (!product.value || !selectedPreco.value || addingToBag.value) return
 
-    bagStore.addToBag({
-        id: selectedPreco.value.id,
-        produtoId: product.value.id,
-        nome: product.value.nome,
-        tamanho: selectedPreco.value.tamanho,
-        preco: selectedPreco.value.preco,
-        imagem: product.value.imagem?.url
-    })
+    addToBagError.value = ''
+    addToBagMessage.value = false
 
-    addToBagMessage.value = true
+    if (!authStore.isAuthenticated) {
+        await router.push({
+            name: 'login',
+            query: { redirect: route.fullPath }
+        })
+        return
+    }
 
-    setTimeout(() => {
-        addToBagMessage.value = false
-    }, 4000)
+    addingToBag.value = true
+
+    try {
+        await bagStore.addToBag({
+            id: selectedPreco.value.id,
+            produtoId: product.value.id,
+            nome: product.value.nome,
+            tamanho: selectedPreco.value.tamanho,
+            preco: selectedPreco.value.preco,
+            imagem: product.value.imagem?.url
+        })
+
+        addToBagMessage.value = true
+
+        setTimeout(() => {
+            addToBagMessage.value = false
+        }, 4000)
+    } catch (error) {
+        console.error('Erro ao adicionar produto à sacola:', error)
+
+        addToBagError.value =
+            error.response?.data?.detail ||
+            error.response?.data?.itens?.[0] ||
+            error.message ||
+            'Não foi possível adicionar o produto à sacola.'
+    } finally {
+        addingToBag.value = false
+    }
 }
 
 const aromasPorProduto = {
@@ -91,7 +143,8 @@ const aromaId = computed(() => {
 </script>
 <template>
     <Transition name="fade">
-        <div v-if="addToBagMessage" class="top-5 md:bottom-auto md:top-30 left-1/2 -translate-x-1/2 fixed z-[110] flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-3 py-3 text-green-700 shadow-lg">
+        <div v-if="addToBagMessage"
+            class="top-5 md:bottom-auto md:top-30 left-1/2 -translate-x-1/2 fixed z-[110] flex items-center gap-2 rounded-lg border border-green-200 bg-green-50 px-3 py-3 text-green-700 shadow-lg">
             <span class="text-lg">✓</span>
             <span>
                 Produto adicionado à sacola!
@@ -137,21 +190,27 @@ const aromaId = computed(() => {
                     class="mt-10 text-[#0C2645] text-2xl font-[Questrial] lg:text-5xl">
                     <span class="font-semibold">R$ {{ selecionadaPrecoFormatado }}</span>
                 </div>
-                <div class="mt-3 lg:mt-7 flex gap-3">
-                    <button @click="adicionarASacola" class="flex-1 bg-[#0C2645] text-white py-3 font-semibold">
-                        Adicionar à sacola
+                <div class="mt-3 lg:mt-7">
+                    <button type="button" @click="adicionarASacola" :disabled="addingToBag || !selectedPreco"
+                        class="w-full bg-[#0C2645] text-white py-3 font-semibold disabled:opacity-60">
+                        {{ addingToBag ? 'Adicionando...' : 'Adicionar à sacola' }}
                     </button>
+
+                    <p v-if="addToBagError" class="mt-3 text-sm text-red-600">
+                        {{ addToBagError }}
+                    </p>
                 </div>
+
                 <div class="mt-10 lg:mt-15 ">
-                     <p class="text-[#2C2828] text-lg font-semibold mb-2">Detalhes:</p>
-                     <p class="text-[#2C2828] text-sm lg:text-lg">
+                    <p class="text-[#2C2828] text-lg font-semibold mb-2">Detalhes:</p>
+                    <p class="text-[#2C2828] text-sm lg:text-lg">
                         {{ product.descricao }}
                     </p>
                 </div>
                 <RouterLink v-if="aromaId" :to="{ path: '/aromas', hash: `#${aromaId}` }">
-                <button class="flex-1 bg-[#0C2645] text-white py-3 px-10 font-semibold mt-3 mt-10 ">
-                    Conhecer Aroma
-                </button>
+                    <button class="flex-1 bg-[#0C2645] text-white py-3 px-10 font-semibold mt-3 mt-10 ">
+                        Conhecer Aroma
+                    </button>
                 </RouterLink>
             </div>
         </div>
