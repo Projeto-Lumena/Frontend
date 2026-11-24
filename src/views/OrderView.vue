@@ -351,14 +351,14 @@ onMounted(async () => {
                         <div class="flex flex-col">
                             <label
                                 class="flex h-[55px] cursor-pointer items-center border border-[#BFC0C0] px-5 transition hover:border-[#0C2645]"
-                                :class="metodoPagamento === 'Pix' ? 'border-[#0C2645] bg-gray-50' : ''">
+                                :class="metodoPagamento === 'Pix' ? 'border-[#0C2645] bg-gray-200' : ''">
                                 <input v-model="metodoPagamento" type="radio" value="Pix" class="sr-only">
                                 <img src="/icons/pix.svg" alt="Pix" class="mr-4 h-7 w-7 object-contain">
                                 <span class="text-[#2C2828]"> Pix </span>
                             </label>
                             <label
                                 class="-mt-px flex h-[55px] cursor-pointer items-center border border-[#BFC0C0] px-5 transition hover:border-[#0C2645]"
-                                :class="metodoPagamento === 'Dinheiro' ? 'border-[#0C2645] bg-gray-50' : ''">
+                                :class="metodoPagamento === 'Dinheiro' ? 'border-[#0C2645] bg-gray-200' : ''">
                                 <input v-model="metodoPagamento" type="radio" value="Dinheiro" class="sr-only">
                                 <img src="/icons/dinheiro.svg" alt="Dinheiro" class="mr-4 h-7 w-7 object-contain">
                                 <span class="text-[#2C2828]"> Dinheiro (combinar com a vendedora) </span>
@@ -370,13 +370,13 @@ onMounted(async () => {
                         <div class="mb-5 flex flex-col border border-[#BFC0C0]">
                             <button type="button" @click="selecionarEntrega('Vou buscar')"
                                 class="flex min-h-[58px] items-center justify-between border-b border-[#BFC0C0] px-5 text-left transition"
-                                :class="tipoEntrega === 'Vou buscar' ? 'bg-gray-50 text-[#0C2645]' : 'text-[#2C2828]'">
+                                :class="tipoEntrega === 'Vou buscar' ? 'bg-gray-200 text-[#0C2645]' : 'text-[#2C2828]'">
                                 <span>Vou buscar o pedido</span>
                                 <span class="text-xl">›</span>
                             </button>
                             <button type="button" @click="selecionarEntrega('Uber Entregas')"
                                 class="flex min-h-[58px] items-center justify-between px-5 text-left transition"
-                                :class="tipoEntrega === 'Uber Entregas' ? 'bg-gray-50 text-[#0C2645]' : 'text-[#2C2828]'">
+                                :class="tipoEntrega === 'Uber Entregas' ? 'bg-gray-200 text-[#0C2645]' : 'text-[#2C2828]'">
                                 <span>Uber Entregas</span>
                                 <span class="text-xl">›</span>
                             </button>

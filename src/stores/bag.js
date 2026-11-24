@@ -13,18 +13,21 @@ export const useBagStore = defineStore('bag', () => {
   const loading = ref(false)
 
   function normalizeItem(item) {
+    const produtoId = item.produto_id ?? item.produto?.id
+    const variacaoId = item.variacao_id ?? item.variacao?.id
+
     const produto = productsStore.products.find(
-      p => String(p.id) === String(item.produto.id)
+      p => String(p.id) === String(produtoId)
     )
 
     return {
-      id: item.variacao.id,
-      produtoId: item.produto.id,
-      nome: item.produto.nome,
-      tamanho: item.variacao.tamanho,
-      preco: Number(item.variacao.preco),
-      imagem: produto?.imagem?.url ?? null,
-      quantidade: item.quantidade
+      id: variacaoId,
+      produtoId,
+      nome: item.produto?.nome ?? item.produto,
+      tamanho: item.variacao?.tamanho ?? item.variacao,
+      preco: Number(item.preco ?? item.variacao?.preco ?? 0),
+      imagem: item.imagem?.url ?? produto?.imagem?.url ?? null,
+      quantidade: Number(item.quantidade)
     }
   }
 
@@ -84,12 +87,12 @@ export const useBagStore = defineStore('bag', () => {
       await comprasApi.create(payload)
 
       const compra = await comprasApi.getBag()
-      normalizeCompra(compra)
+      await normalizeCompra(compra)
       return
     }
 
     const compra = await comprasApi.getById(compraId.value)
-    normalizeCompra(compra)
+    await normalizeCompra(compra)
   }
 
   async function addToBag(product, quantidade = 1) {

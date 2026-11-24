@@ -174,7 +174,7 @@ function handleLogout() {
 
 </script>
 <template>
-  <div class="min-h-screen bg-[#F8F9F9] md:mt-20 py-8 px-4 lg:flex lg:justify-between w-full">
+  <div class="w-full py-8 px-4 lg:flex lg:justify-between lg:gap-10 md:mt-20">
     <div class="lg:w-1/3 lg:mr-10 lg:ml-10 lg:mt-10">
       <transition name="fade">
         <div v-if="mensagemParabens" class="text-center mb-10 lg:text-left">

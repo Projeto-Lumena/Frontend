@@ -192,7 +192,7 @@ const aromaId = computed(() => {
                 </div>
                 <div class="mt-3 lg:mt-7">
                     <button type="button" @click="adicionarASacola" :disabled="addingToBag || !selectedPreco"
-                        class="w-full bg-[#0C2645] text-white py-3 font-semibold disabled:opacity-60">
+                        class="w-full mt-6 bg-[#0C2645] text-white py-3 transition-all duration-300 hover:bg-[#183D65] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed">
                         {{ addingToBag ? 'Adicionando...' : 'Adicionar à sacola' }}
                     </button>
 

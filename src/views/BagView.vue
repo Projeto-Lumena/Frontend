@@ -121,69 +121,116 @@ async function aumentarQuantidade(id) {
     <p v-if="bagError" class="text-center text-red-600 mb-4">
         {{ bagError }}
     </p>
-    <section
-        class="mx-auto w-[calc(100%-54px)] max-w-[900px] pb-4 mb-4 lg:pb-0 lg:mb-20 lg:max-w-[1250px] lg:grid lg:grid-cols-[1fr_375px] lg:gap-12 lg:items-start">
-        <div class="lg:grid lg:grid-cols-2 lg:gap-x-5 lg:gap-y-5">
-            <div v-for="item in items" :key="item.id"
-                class="flex border border-[#BFC0C0] mb-3 p-2 h-[140px] items-center lg:mb-0 lg:h-[155px]">
-                <RouterLink :to="{ name: 'produto', params: { id: item.produtoId || item.id } }"
-                    class="w-[118px] h-[120px] shrink-0 lg:w-[132px] lg:h-[135px]">
-                    <img :src="item.imagem" :alt="`Vela Aromática - ${item.nome}`" class="w-full h-full object-cover" />
-                </RouterLink>
-                <div class="flex flex-col justify-between h-full ml-3 flex-1 py-1">
-                    <RouterLink :to="{ name: 'produto', params: { id: item.produtoId || item.id } }">
-                        <p class="text-[14px] leading-[17px] text-[#2C2828]"> Vela Aromática - </p>
-                        <p class="text-[14px] leading-[17px] text-[#2C2828]"> {{ item.nome }} </p>
-                        <p class="text-[13px] text-[#2C2828]"> Tamanho: {{ item.tamanho }} </p>
-                    </RouterLink>
-                    <p class="text-[21px] text-[#2C2828]"> R${{ formatPrice(item.preco) }} </p>
-                </div>
-                <div
-                    class="flex items-center justify-between border border-[#BFC0C0] w-[81px] h-[38px] mt-20 px-2 lg:mt-[95px]">
-                    <button type="button" class="text-xl font-light" @click="removerItem(item)" :disabled="processing">
-                        −
-                    </button>
 
-                    <span class="text-sm">
-                        {{ item.quantidade }}
-                    </span>
+    <section class="mx-auto w-[calc(100%-54px)] max-w-[900px] pb-4 mb-4 lg:pb-0 lg:mb-20 lg:max-w-[1250px]">
 
-                    <button type="button" class="text-xl font-light" @click="aumentarQuantidade(item.id)"
-                        :disabled="processing">
-                        +
-                    </button>
-                </div>
-            </div>
-            <p v-if="bagStore.loading" class="text-center text-[#2C2828] py-10 lg:col-span-2">
-                Carregando sua sacola...
+        <!-- Carregamento -->
+        <p v-if="bagStore.loading" class="text-center text-[#2C2828] py-10">
+            Carregando sua sacola...
+        </p>
+
+        <!-- Sacola vazia -->
+        <div v-else-if="items.length === 0" class="border border-gray-300 bg-white p-8 lg:p-19 text-center">
+
+            <p class="text-[#0C2645] font-serif">
+                Sua sacola está vazia.
             </p>
 
-            <div v-else-if="items.length === 0" class="text-center text-[#2C2828] py-10 lg:col-span-2">
-                Sua sacola está vazia.
-            </div>
-        </div>
-        <div
-            class="relative z-10 bg-[#0C2645] w-full mt-6 mb-6 lg:sticky lg:top-auto lg:bottom-8 lg:self-end lg:mt-0 lg:mb-0 lg:w-full lg:bg-transparent">
-            <div class="border-t border-[#BFC0C0] bg-white">
-                <div class="flex justify-between px-4 py-2 text-sm lg:px-5 lg:py-3">
-                    <span>Subtotal:</span>
-                    <span> R${{ formatPrice(bagStore.subtotal) }} </span>
-                </div>
-                <div class="flex justify-between border-t border-[#BFC0C0] px-4 py-2 text-sm lg:px-5 lg:py-3">
-                    <span>Descontos</span>
-                    <span> R${{ formatPrice(bagStore.descontos) }}</span>
-                </div>
-            </div>
-            <RouterLink v-if="items.length > 0 && !bagStore.loading" to="/fazer-pedido" class="w-full">
-                <button type="button"
-                    class="w-full h-15 bg-[#0C2645] text-white text-lg flex items-center justify-between px-4 hover:bg-[#163657] transition lg:h-[52px] lg:px-5">
-                    <span>Finalizar pedido</span>
-                    <span> R${{ formatPrice(bagStore.total) }} </span>
-                </button>
+            <p class="text-sm text-gray-500 mt-2">
+                Confira nossos produtos e encontre sua próxima vela aromática favorita.
+            </p>
+
+            <RouterLink to="/"
+                class="inline-block mt-6 bg-[#0C2645] text-white px-6 py-3 hover:bg-[#163657] transition">
+                Conferir produtos
             </RouterLink>
+        </div>
+
+        <!-- Sacola com produtos -->
+        <div v-else class="lg:grid lg:grid-cols-[1fr_375px] lg:gap-12 lg:items-start">
+
+            <div class="lg:grid lg:grid-cols-2 lg:gap-x-5 lg:gap-y-5">
+                <div v-for="item in items" :key="item.id"
+                    class="flex border border-[#BFC0C0] mb-3 p-2 h-[140px] items-center lg:mb-0 lg:h-[155px]">
+
+                    <RouterLink :to="{ name: 'produto', params: { id: item.produtoId || item.id } }"
+                        class="w-[118px] h-[120px] shrink-0 lg:w-[132px] lg:h-[135px]">
+
+                        <img :src="item.imagem" :alt="`Vela Aromática - ${item.nome}`"
+                            class="w-full h-full object-cover" />
+                    </RouterLink>
+
+                    <div class="flex flex-col justify-between h-full ml-3 flex-1 py-1">
+                        <RouterLink v-if="item.produtoId" :to="{ name: 'produto', params: { id: item.produtoId } }">
+
+                            <p class="text-[14px] leading-[17px] text-[#2C2828]">
+                                Vela Aromática -
+                            </p>
+
+                            <p class="text-[14px] leading-[17px] text-[#2C2828]">
+                                {{ item.nome }}
+                            </p>
+
+                            <p class="text-[13px] text-[#2C2828]">
+                                Tamanho: {{ item.tamanho }}
+                            </p>
+                        </RouterLink>
+
+                        <p class="text-[21px] text-[#2C2828]">
+                            R${{ formatPrice(item.preco) }}
+                        </p>
+                    </div>
+
+                    <div
+                        class="flex items-center justify-between border border-[#BFC0C0] w-[81px] h-[38px] mt-20 px-2 lg:mt-[95px]">
+
+                        <button type="button" class="text-xl font-light" @click="removerItem(item)"
+                            :disabled="processing">
+                            −
+                        </button>
+
+                        <span class="text-sm">
+                            {{ item.quantidade }}
+                        </span>
+
+                        <button type="button" class="text-xl font-light" @click="aumentarQuantidade(item.id)"
+                            :disabled="processing">
+                            +
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Resumo do pedido -->
+            <div
+                class="relative z-10 bg-[#0C2645] w-full mt-6 mb-6 lg:sticky lg:top-auto lg:bottom-8 lg:self-end lg:mt-0 lg:mb-0 lg:w-full lg:bg-transparent">
+
+                <div class="border-t border-[#BFC0C0] bg-white">
+                    <div class="flex justify-between px-4 py-2 text-sm lg:px-5 lg:py-3">
+                        <span>Subtotal:</span>
+                        <span>R${{ formatPrice(bagStore.subtotal) }}</span>
+                    </div>
+
+                    <div class="flex justify-between border-t border-[#BFC0C0] px-4 py-2 text-sm lg:px-5 lg:py-3">
+                        <span>Descontos</span>
+                        <span>R${{ formatPrice(bagStore.descontos) }}</span>
+                    </div>
+                </div>
+
+                <RouterLink to="/fazer-pedido" class="w-full">
+
+                    <button type="button"
+                        class="w-full h-15 bg-[#0C2645] text-white text-lg flex items-center justify-between px-4 hover:bg-[#163657] transition lg:h-[52px] lg:px-5">
+
+                        <span>Finalizar pedido</span>
+                        <span>R${{ formatPrice(bagStore.total) }}</span>
+                    </button>
+                </RouterLink>
+            </div>
         </div>
     </section>
 </template>
+
 <style scoped>
 .fade-enter-active,
 .fade-leave-active {

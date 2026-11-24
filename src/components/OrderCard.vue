@@ -28,21 +28,21 @@ function proximoProduto() {
 }
 
 function obterImagem(item) {
-    const produto = item?.produto
-
-    if (!produto) return ''
-
-    const produtoCompleto = productsStore.products.find(
-        p => String(p.id) === String(produto.id)
-    )
-
     return (
-        produtoCompleto?.imagem?.url ||
-        produtoCompleto?.imagem ||
-        produto.imagem?.url ||
-        produto.imagem ||
+        item?.imagem?.url ||
+        item?.imagem ||
+        item?.produto?.imagem?.url ||
+        item?.produto?.imagem ||
         ''
     )
+}
+
+function obterNome(item) {
+    return item?.produto?.nome || item?.produto || 'Produto'
+}
+
+function obterTamanho(item) {
+    return item?.variacao?.tamanho || item?.variacao || ''
 }
 
 function formatarTotal(valor) {
@@ -70,14 +70,14 @@ onUnmounted(() => {
         <div v-if="itemAtual" class="flex gap-3">
             <img
                 :src="obterImagem(itemAtual)"
-                :alt="itemAtual.produto?.nome || 'Produto'"
+                :alt="obterNome(itemAtual)"
                 class="w-[85px] h-[85px] shrink-0 object-cover"
             >
 
             <div class="min-w-0 flex-1">
                 <div class="flex justify-between gap-2">
                     <h3 class="text-[14px] leading-4">
-                        {{ itemAtual.produto?.nome }}
+                        {{ obterNome(itemAtual) }}
                     </h3>
 
                     <span class="text-[10px] text-[#2C2828] whitespace-nowrap">
@@ -87,7 +87,7 @@ onUnmounted(() => {
 
                 <div class="text-[11px] text-[#2C2828] mt-2">
                     <p>{{ pedido.data }}</p>
-                    <p>Tamanho: {{ itemAtual.variacao?.tamanho }}</p>
+                    <p>Tamanho: {{ obterTamanho(itemAtual) }}</p>
                     <p>Quantidade: {{ itemAtual.quantidade }}</p>
                 </div>
 

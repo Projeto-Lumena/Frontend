@@ -21,8 +21,10 @@ const comprasApi = {
   async getBag() {
     const compras = await this.getAll()
 
-    return compras.find(compra => compra.status === 'Carrinho') || null
-  },
+    return compras.find(
+        compra => compra.status === 'Carrinho'
+    ) || null
+},
 
   async getById(id) {
     const { data } = await apiClient.get(`/compra/${id}/`)
